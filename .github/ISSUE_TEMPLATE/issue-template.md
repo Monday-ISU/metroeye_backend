@@ -1,7 +1,7 @@
 ---
 name: issue template
 about: 이슈를 생생해주세요.
-title: "[태그] 내용 #이슈번호"
+title: "[태그] 내용"
 labels: ''
 assignees: ''
 
