@@ -1,2 +1,12 @@
 server:
   port: 8080
+
+spring:
+  config:
+    activate:
+      on-profile: local
+
+logging:
+  level:
+    click.metroeye.api: debug
+    org.springframework: info
