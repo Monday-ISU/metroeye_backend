@@ -1,10 +1,17 @@
-server:
-  port: 8080
-
 spring:
   config:
     activate:
       on-profile: dev
+
+springdoc:
+  default-consumes-media-type: application/json
+  default-produces-media-type: application.json
+  swagger-ui:
+    version: v1
+    use-root-path: true
+    tags-sorter: alpha
+    operations-sorter: method
+    default-model-expand-depth: 2
 
 logging:
   level:
