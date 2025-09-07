@@ -28,3 +28,7 @@
     - Map: 접미사로 "Map"을 붙이도록 한다.
     - Array: 접미사로 "Arr"을 붙이도록 한다.
     - Set: 접미사로 "Set"을 붙이도록 한다.
+
+### API LIST
+- 호선 별 역 정보 데이터 API
+https://data.seoul.go.kr/dataList/OA-15442/S/1/datasetView.do
