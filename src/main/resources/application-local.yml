@@ -2,6 +2,7 @@ spring:
   config:
     activate:
       on-profile: local
+    import: application-secret.yml
 
 springdoc:
   default-consumes-media-type: application/json
