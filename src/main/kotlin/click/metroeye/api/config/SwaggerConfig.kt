@@ -18,7 +18,7 @@ class SwaggerConfig {
     }
 
     @Value("\${springdoc.swagger-ui.version}")
-    private lateinit var API_VERSION: String
+    private lateinit var apiVersion: String
 
     @Bean
     fun openAPI(): OpenAPI {
@@ -40,7 +40,7 @@ class SwaggerConfig {
             .info(
                 Info()
                     .title("Metroeye API")
-                    .version(API_VERSION)
+                    .version(apiVersion)
                     .description("Metroeye API Documentation")
             )
     }
