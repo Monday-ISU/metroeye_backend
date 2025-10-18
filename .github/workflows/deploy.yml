@@ -41,7 +41,7 @@ jobs:
           docker push $IMAGE_NAME
 
       - name: Deploy to EC2
-        uses: appleboy/ssh-action@v1.2.0
+        uses: appleboy/ssh-action@v1.2.2
         with:
           host: ${{ secrets.EC2_DEV_HOST }}
           username: ${{ secrets.EC2_DEV_USER }}
@@ -57,5 +57,5 @@ jobs:
               --network proxy \
               -e TZ=Asia/Seoul \
               -p 8080:8080 \
-              ghcr.io/${{ secrets.GCHR_USERNAME }}/metroeye-backend:dev
+              ghcr.io/${{ secrets.GHCR_USERNAME }}/metroeye-backend:dev
             echo "Deploy to EC2: END"
