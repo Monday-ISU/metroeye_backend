@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("v1/lines")
 class LineController {
-    @GetMapping()
+    @GetMapping(produces = [APPLICATION_JSON_VALUE])
     fun getLines(): ResponseEntity<Map<String, Any>> {
         var lines = listOf(
             mapOf("idx" to 1, "line_name" to "1호선"),
