@@ -8,6 +8,7 @@ import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.util.UriComponentsBuilder
 import reactor.core.publisher.Mono
 import java.net.URI
+import java.nio.charset.StandardCharsets
 
 @Component
 class WebClientAdapter(
@@ -31,6 +32,7 @@ class WebClientAdapter(
             val requestUri: URI = UriComponentsBuilder
                 .fromUriString(uri)
                 .apply { requestParams.forEach { (key, value) -> queryParam(key, value) } }
+                .encode()
                 .build()
                 .toUri()
 
