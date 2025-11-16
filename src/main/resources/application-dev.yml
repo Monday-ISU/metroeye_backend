@@ -3,6 +3,11 @@ spring:
     activate:
       on-profile: dev
 
+external-api:
+  seoul-public-data:
+    subway:
+      api-key: ${SEOUL_SUBWAY_API_KEY}
+
 springdoc:
   default-consumes-media-type: application/json
   default-produces-media-type: application.json
