@@ -66,6 +66,7 @@ jobs:
               --name metroeye-app \
               --network proxy \
               -e TZ=Asia/Seoul \
+              -e SEOUL_SUBWAY_API_KEY=${{ secrets.SEOUL_SUBWAY_API_KEY }}
               -p 8080:8080 \
               ghcr.io/$LOWER_GHCR_USERNAME/metroeye-backend:dev
             echo "Deploy to EC2: END"
