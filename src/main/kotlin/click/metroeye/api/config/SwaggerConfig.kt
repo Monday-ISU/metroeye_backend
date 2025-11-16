@@ -10,15 +10,15 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 @Configuration
-class SwaggerConfig {
+class SwaggerConfig(
+    @Value("\${springdoc.swagger-ui.version}")
+    private val apiVersion: String
+) {
     companion object {
         const val SECURITY_SCHEME_NAME = "Bearer Authentication"
         const val SECURITY_SCHEME_TYPE = "bearer"
         const val SECURITY_SCHEME_FORMAT = "JWT"
     }
-
-    @Value("\${springdoc.swagger-ui.version}")
-    private lateinit var apiVersion: String
 
     @Bean
     fun openAPI(): OpenAPI {
