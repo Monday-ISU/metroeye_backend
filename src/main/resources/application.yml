@@ -5,3 +5,15 @@ spring:
   output:
     ansi:
       enabled: always
+
+management:
+  server:
+    port: 8080
+  endpoints:
+    web:
+      base-path: /internal
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: never
