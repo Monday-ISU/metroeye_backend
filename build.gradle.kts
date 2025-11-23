@@ -19,14 +19,13 @@ repositories {
 }
 
 dependencies {
-	implementation("org.springframework.boot:spring-boot-starter-web")
+	implementation("org.springframework.boot:spring-boot-starter-webflux")
+	implementation("org.springframework.boot:spring-boot-starter-actuator")
+	implementation("org.springframework.boot:spring-boot-starter-security")
+	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
-	implementation("org.springframework.boot:spring-boot-starter-actuator")
-	developmentOnly("org.springframework.boot:spring-boot-devtools")
-	implementation("org.springframework.boot:spring-boot-starter-security")
-	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9")
-	implementation("org.springframework.boot:spring-boot-starter-webflux:3.5.4")
+	implementation("org.springdoc:springdoc-openapi-starter-webflux-ui:2.8.14")
 
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")

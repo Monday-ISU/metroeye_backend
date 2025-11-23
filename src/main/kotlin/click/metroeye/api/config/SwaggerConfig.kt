@@ -10,10 +10,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 @Configuration
-class SwaggerConfig(
-    @Value("\${springdoc.swagger-ui.version}")
-    private val apiVersion: String
-) {
+class SwaggerConfig {
     companion object {
         const val SECURITY_SCHEME_NAME = "Bearer Authentication"
         const val SECURITY_SCHEME_TYPE = "bearer"
@@ -40,7 +37,7 @@ class SwaggerConfig(
             .info(
                 Info()
                     .title("Metroeye API")
-                    .version(apiVersion)
+                    .version("1.0.0")
                     .description("Metroeye API Documentation")
             )
     }
