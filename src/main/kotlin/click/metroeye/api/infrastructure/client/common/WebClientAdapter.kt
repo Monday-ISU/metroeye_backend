@@ -7,8 +7,6 @@ import org.springframework.web.reactive.function.client.ExchangeFilterFunction
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.util.UriComponentsBuilder
 import reactor.core.publisher.Mono
-import java.net.URI
-import java.nio.charset.StandardCharsets
 
 @Component
 class WebClientAdapter(
@@ -27,24 +25,33 @@ class WebClientAdapter(
         uri: String,
         requestParams: Map<String, Any>,
         responseType: ParameterizedTypeReference<T>
-    ): T? {
-        try {
-            val requestUri: URI = UriComponentsBuilder
-                .fromUriString(uri)
+    ): Mono<T> {
+        val requestUri = try {
+            UriComponentsBuilder.fromUriString(uri)
                 .apply { requestParams.forEach { (key, value) -> queryParam(key, value) } }
                 .encode()
                 .build()
                 .toUri()
-
-            return this.webClient.get()
-                .uri(requestUri)
-                .retrieve()
-                .bodyToMono(responseType)
-                .block()
-        } catch(e: Exception) {
+        } catch (e: Exception) {
             e.printStackTrace()
-            return null
+            return Mono.empty()
         }
+
+        return this.webClient.get()
+            .uri(requestUri)
+            .retrieve()
+            .bodyToMono(responseType)
+            .onErrorResume {
+                logger.error("""
+                    
+                    
+                    |[WEBCLIENT REQUEST ERROR]
+                    |>> METHOD: GET
+                    |>> MESSAGE: ${it.message}
+                """.trimIndent()
+                )
+                Mono.empty()
+            }
     }
 
     private fun requestFilter(): ExchangeFilterFunction {
@@ -54,11 +61,9 @@ class WebClientAdapter(
                 
                 
                 |[WEBCLIENT REQUEST]
-                |>> METHOD: {}
-                |>> URL: {} 
-                """.trimIndent(),
-                request.method(),
-                request.url()
+                |>> METHOD: ${request.method()}
+                |>> URL: ${request.url()} 
+                """.trimIndent()
             )
             Mono.just(request)
         }
@@ -71,9 +76,8 @@ class WebClientAdapter(
                 
                 
                 |[WEBCLIENT RESONSE]
-                |>> STATUS: {}
-                """.trimIndent(),
-                response.statusCode()
+                |>> STATUS: ${response.statusCode()}
+                """.trimIndent()
             )
             Mono.just(response)
         }
