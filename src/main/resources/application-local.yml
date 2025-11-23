@@ -6,9 +6,8 @@ spring:
 
 springdoc:
   default-consumes-media-type: application/json
-  default-produces-media-type: application.json
+  default-produces-media-type: application/json
   swagger-ui:
-    version: v1
     use-root-path: true
     tags-sorter: alpha
     operations-sorter: method
