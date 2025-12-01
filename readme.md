@@ -37,9 +37,9 @@ https://data.seoul.go.kr/dataList/OA-15442/S/1/datasetView.do
 
 ```mermaid
 classDiagram
-    direction LR
+    direction TB
 
-    %% --- Enums (최상단 가로 배치) ---
+    %% ===== ENUMS (가로 배치) =====
     class Direction {
       <<enum>>
       UP
@@ -69,7 +69,13 @@ classDiagram
       RUNNING
     }
 
-    %% --- Domain Entities ---
+    %% ENUMS 가로 정렬 강제
+    Direction -- TrainType
+    TrainType -- PositionType
+    PositionType -- ArrivalCode
+
+
+    %% ===== DOMAIN ENTITIES =====
     class Station {
       +id: Long
       +name: String
@@ -115,12 +121,12 @@ classDiagram
       +observedAt: String
       +etaToCenterStationSec: Int
     }
-    
-    %% --- RELATIONS(카디널리티 + 라벨) ---
+
+    %% ===== RELATIONS =====
     Station "1" --> "0..*" StationInLine : includedIn
     Line "1" --> "1..*" StationInLine : has
     Line "1" --> "0..*" Train : operates
-    Train "1" --> "0..*" RealtimeTrainPosition : snapshots
     StationInLine "1" --> "0..*" RealtimeTrainPosition : positionRef
+    Train "1" --> "0..*" RealtimeTrainPosition : snapshots
 
 ```
