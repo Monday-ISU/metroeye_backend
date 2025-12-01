@@ -34,92 +34,77 @@
 https://data.seoul.go.kr/dataList/OA-15442/S/1/datasetView.do
 
 # Degine
-classDiagram
-    %% ===== Station =====
+ classDiagram
     class Station {
-      +Long id
-      +String name
-      +String? externalCode
-      +Double? latitude
-      +Double? longitude
+      +id: Long
+      +name: String
+      +externalCode: String
+      +latitude: Double
+      +longitude: Double
     }
-
-    %% ===== Line =====
     class Line {
-      +Long id
-      +String name
-      +String shortName
-      +String? externalCode
-      +String? color
+      +id: Long
+      +name: String
+      +shortName: String
+      +externalCode: String
+      +color: String
     }
-
-    %% ===== StationInLine =====
     class StationInLine {
-      +Long id
-      +Long lineId
-      +Long stationId
-      +Int seq
-      +Boolean expressStop
+      +id: Long
+      +lineId: Long
+      +stationId: Long
+      +seq: Int
+      +expressStop: Boolean
     }
-
-    %% ===== Train =====
     class Train {
-      +Long id
-      +String trainNumber
-      +Long lineId
-      +TrainType type
-      +Long destinationStationId
+      +id: Long
+      +trainNumber: String
+      +lineId: Long
+      +type: TrainType
+      +destinationStationId: Long
     }
-
-    %% ===== Realtime =====
     class RealtimeTrainPosition {
-      +Long id
-      +Long trainId
-      +Long lineId
-      +Direction direction
-      +PositionType positionType
-      +Long? stationInLineId
-      +Long? fromStationInLineId
-      +Long? toStationInLineId
-      +ArrivalCode arrivalCode
-      +Instant observedAt
-      +Int? etaToCenterStationSec
+      +id: Long
+      +trainId: Long
+      +lineId: Long
+      +direction: Direction
+      +positionType: PositionType
+      +stationInLineId: Long
+      +fromStationInLineId: Long
+      +toStationInLineId: Long
+      +arrivalCode: ArrivalCode
+      +observedAt: String
+      +etaToCenterStationSec: Int
     }
-
-    %% ===== Enums =====
     class Direction {
       <<enum>>
       UP
       DOWN
     }
-
     class TrainType {
       <<enum>>
       LOCAL
       EXPRESS
     }
-
     class PositionType {
       <<enum>>
       AT
       BETWEEN
     }
-
     class ArrivalCode {
       <<enum>>
-      ENTERING(0)
-      ARRIVED(1)
-      DEPARTED(2)
-      PREV_DEPARTED(3)
-      PREV_ENTERING(4)
-      PREV_ARRIVED(5)
-      RUNNING(99)
+      ENTERING
+      ARRIVED
+      DEPARTED
+      PREV_DEPARTED
+      PREV_ENTERING
+      PREV_ARRIVED
+      RUNNING
     }
-
-    %% ===== Relations =====
     Station "1" --> "many" StationInLine : includedIn
     Line "1" --> "many" StationInLine : has
     StationInLine "1" --> "many" RealtimeTrainPosition : positionRef
     Line "1" --> "many" Train : operates
     Train "1" --> "many" RealtimeTrainPosition : snapshots
+
 
