@@ -38,16 +38,16 @@ https://data.seoul.go.kr/dataList/OA-15442/S/1/datasetView.do
 
 📘 Direction (enum)
 - 열차의 이동 방향
-- UP: 상행
-- DOWN: 하행
+    - UP: 상행
+    - DOWN: 하행
 
 📘 TrainType (enum)
-    - 열차 종류
+- 열차 종류
     - LOCAL: 일반
     - EXPRESS: 급행
 
 📘 PositionType (enum)
-    열차의 현재 위치 타입
+- 열차의 현재 위치 타입
     - AT: 특정 역 위
     - BETWEEN: 역과 역 사이 이동중
 
