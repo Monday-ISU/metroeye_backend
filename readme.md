@@ -66,14 +66,21 @@ https://data.seoul.go.kr/dataList/OA-15442/S/1/datasetView.do
   name	             역 이름
   externalCode	     공공 API 역 코드
   latitude/longitude 지도 좌표(지금 은 미사용 지도 관련 기능 할 떄)
-📘 Line
+
+
+## 📘 StationInLine (노선-역 매핑 테이블)
+
+노선(Line) 위에 특정 Station이 **몇 번째 순번**으로 배치되는지 나타낸다.  
+지하철 실시간 위치에서 “기준역 ±4개역” 계산의 핵심 테이블.
+
 | 컬럼명 | 타입 | 설명 |
-|--------|-------|-------------------------------|
-| id | Long | PK (노선 내 역 순번 엔트리 ID) |
-| lineId | Long | 어떤 노선인지 (FK → Line.id) |
-| stationId | Long | 어떤 역인지 (FK → Station.id) |
-| seq | Int | 노선 내 순번 (0부터 시작 가능) |
-| expressStop | Boolean | 급행 정차역 여부 |
+|--------|--------|-------------------------------|
+| id | Long | PK |
+| lineId | Long | FK → Line.id |
+| stationId | Long | FK → Station.id |
+| seq | Int | 노선 내 순서 (정렬 기준) |
+| expressStop | Boolean | 급행 정차 여부 |
+
 
 📘 Line
 - 지하철 노선 정보
