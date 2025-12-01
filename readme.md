@@ -36,8 +36,84 @@ https://data.seoul.go.kr/dataList/OA-15442/S/1/datasetView.do
 # Degine
 
 ```mermaid
-classDiagram
-    class Station {
+ class Station {
       +id: Long
       +name: String
+      +externalCode: String
+      +latitude: Double
+      +longitude: Double
     }
+
+    class Line {
+      +id: Long
+      +name: String
+      +shortName: String
+      +externalCode: String
+      +color: String
+    }
+
+    class StationInLine {
+      +id: Long
+      +lineId: Long
+      +stationId: Long
+      +seq: Int
+      +expressStop: Boolean
+    }
+
+    class Train {
+      +id: Long
+      +trainNumber: String
+      +lineId: Long
+      +type: TrainType
+      +destinationStationId: Long
+    }
+
+    class RealtimeTrainPosition {
+      +id: Long
+      +trainId: Long
+      +lineId: Long
+      +direction: Direction
+      +positionType: PositionType
+      +stationInLineId: Long
+      +fromStationInLineId: Long
+      +toStationInLineId: Long
+      +arrivalCode: ArrivalCode
+      +observedAt: String
+      +etaToCenterStationSec: Int
+    }
+
+    class Direction {
+      <<enum>>
+      UP
+      DOWN
+    }
+
+    class TrainType {
+      <<enum>>
+      LOCAL
+      EXPRESS
+    }
+
+    class PositionType {
+      <<enum>>
+      AT
+      BETWEEN
+    }
+
+    class ArrivalCode {
+      <<enum>>
+      ENTERING
+      ARRIVED
+      DEPARTED
+      PREV_DEPARTED
+      PREV_ENTERING
+      PREV_ARRIVED
+      RUNNING
+    }
+
+    Station "1" --> "many" StationInLine : includedIn
+    Line "1" --> "many" StationInLine : has
+    StationInLine "1" --> "many" RealtimeTrainPosition : positionRef
+    Line "1" --> "many" Train : operates
+    Train "1" --> "many" RealtimeTrainPosition : snapshots
+```
