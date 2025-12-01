@@ -138,14 +138,14 @@ flowchart TB
 
     %% ========== API Layer ==========
     subgraph API["🌐 API Layer (Controller)"]
-        StationController["StationController\n- 역 정보 조회\n- 역 → 노선 리스트"]
+        StationController["StationController<br>- 역 정보 조회\n- 역 → 노선 리스트"]
         RealtimeController["RealtimeController\n- 실시간 열차 위치 조회"]
     end
 
     %% ========== Service Layer ==========
     subgraph Service["🧠 Service Layer"]
-        StationService["StationService\n- 역/노선 관계 조회\n- 필터링/정렬"]
-        RealtimeService["RealtimeService\n- 기준역 ±4개역 계산\n- 열차 위치 매핑"]
+        StationService["StationService\n- 역/노선 관계 조회<br>- 필터링/정렬"]
+        RealtimeService["RealtimeService\n- 기준역 ±4개역 계산<br>- 열차 위치 매핑"]
     end
 
     %% ========== Domain Layer ==========
