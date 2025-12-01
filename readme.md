@@ -51,34 +51,4 @@ https://data.seoul.go.kr/dataList/OA-15442/S/1/datasetView.do
       +externalCode: String
       +color: String
     }
-
-    class StationInLine {
-      +id: Long
-      +lineId: Long
-      +stationId: Long
-      +seq: Int
-      +expressStop: Boolean
-    }
-
-    class Train {
-      +id: Long
-      +trainNumber: String
-      +lineId: Long
-      +type: TrainType
-      +destinationStationId: Long
-    }
-
-    class RealtimeTrainPosition {
-      +id: Long
-      +trainId: Long
-      +lineId: Long
-      +direction: Direction
-      +positionType: PositionType
-      +stationInLineId: Long
-      +fromStationInLineId: Long
-      +toStationInLineId: Long
-      +arrivalCode: ArrivalCode
-      +observedAt: String
-      +etaToCenterStationSec: Int
-    }
 ```
