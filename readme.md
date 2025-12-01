@@ -37,9 +37,9 @@ https://data.seoul.go.kr/dataList/OA-15442/S/1/datasetView.do
 📝 2. Domain Description (정식 문서)
 
 📘 Direction (enum)
-    - 열차의 이동 방향
-    - UP: 상행
-    - DOWN: 하행
+- 열차의 이동 방향
+- UP: 상행
+- DOWN: 하행
 
 📘 TrainType (enum)
     - 열차 종류
