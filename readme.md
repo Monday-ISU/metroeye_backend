@@ -69,6 +69,14 @@ https://data.seoul.go.kr/dataList/OA-15442/S/1/datasetView.do
 
 📘 Line
 - 지하철 노선 정보
+| 컬럼명 |  설명 |
+|--------|-------------------------------|
+| shortName | PK (노선 내 역 순번 엔트리 ID) |
+| color |  어떤 노선인지 (FK → Line.id) |
+| externalCode | 어떤 역인지 (FK → Station.id) |
+| seq |  노선 내 순번 (0부터 시작 가능) |
+| expressStop  급행 정차역 여부 |
+
 필드	         역할
 shortName	 정렬/표시용 이름
 color	     노선 색상
