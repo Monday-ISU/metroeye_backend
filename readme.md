@@ -81,33 +81,4 @@ https://data.seoul.go.kr/dataList/OA-15442/S/1/datasetView.do
       +observedAt: String
       +etaToCenterStationSec: Int
     }
-
-    class Direction {
-      <<enum>>
-      UP
-      DOWN
-    }
-
-    class TrainType {
-      <<enum>>
-      LOCAL
-      EXPRESS
-    }
-
-    class PositionType {
-      <<enum>>
-      AT
-      BETWEEN
-    }
-
-    class ArrivalCode {
-      <<enum>>
-      ENTERING
-      ARRIVED
-      DEPARTED
-      PREV_DEPARTED
-      PREV_ENTERING
-      PREV_ARRIVED
-      RUNNING
-    }
 ```
