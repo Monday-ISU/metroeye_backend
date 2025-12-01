@@ -91,7 +91,7 @@ classDiagram
       +externalCode: String
       +color: String
     }
-
+    //노선 위에서의 역 + 순서 + 특성
     class StationInLine {
       +id: Long
       +lineId: Long
