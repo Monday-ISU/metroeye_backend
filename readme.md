@@ -66,6 +66,14 @@ https://data.seoul.go.kr/dataList/OA-15442/S/1/datasetView.do
   name	             역 이름
   externalCode	     공공 API 역 코드
   latitude/longitude 지도 좌표(지금 은 미사용 지도 관련 기능 할 떄)
+📘 Line
+| 컬럼명 | 타입 | 설명 |
+|--------|-------|-------------------------------|
+| id | Long | PK (노선 내 역 순번 엔트리 ID) |
+| lineId | Long | 어떤 노선인지 (FK → Line.id) |
+| stationId | Long | 어떤 역인지 (FK → Station.id) |
+| seq | Int | 노선 내 순번 (0부터 시작 가능) |
+| expressStop | Boolean | 급행 정차역 여부 |
 
 📘 Line
 - 지하철 노선 정보
