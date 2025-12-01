@@ -128,5 +128,59 @@ classDiagram
     Line "1" --> "0..*" Train : operates
     StationInLine "1" --> "0..*" RealtimeTrainPosition : positionRef
     Train "1" --> "0..*" RealtimeTrainPosition : snapshots
+```
+``` mermaid
+flowchart TB
+    %% ========== Client Layer ==========
+    subgraph Client["📱 Client"]
+        UI["역 선택 화면\n실시간 위치 화면"]
+    end
 
+    %% ========== API Layer ==========
+    subgraph API["🌐 API Layer (Controller)"]
+        StationController["StationController\n- 역 정보 조회\n- 역 → 노선 리스트"]
+        RealtimeController["RealtimeController\n- 실시간 열차 위치 조회"]
+    end
+
+    %% ========== Service Layer ==========
+    subgraph Service["🧠 Service Layer"]
+        StationService["StationService\n- 역/노선 관계 조회\n- 필터링/정렬"]
+        RealtimeService["RealtimeService\n- 기준역 ±4개역 계산\n- 열차 위치 매핑"]
+    end
+
+    %% ========== Domain Layer ==========
+    subgraph Domain["📦 Domain Models"]
+        StationD["Station"]
+        LineD["Line"]
+        StationInLineD["StationInLine"]
+        TrainD["Train"]
+        RealtimePosD["RealtimeTrainPosition"]
+    end
+
+    %% ========== Infrastructure Layer ==========
+    subgraph Infra["💾 Infra Layer"]
+        StationRepo["StationRepository"]
+        LineRepo["LineRepository"]
+        TrainRepo["TrainRepository"]
+        RealtimeCache["RealtimeStore / Redis Cache"]
+        ExternalAPI["ExternalSubwayAPI\n- 공공데이터 호출"]
+        Mapper["ExternalAPIMapper\nJSON → Domain 변환"]
+    end
+
+    %% Connections
+    UI --> StationController
+    UI --> RealtimeController
+
+    StationController --> StationService
+    RealtimeController --> RealtimeService
+
+    StationService --> StationRepo
+    StationService --> LineRepo
+
+    RealtimeService --> RealtimeCache
+    RealtimeService --> StationRepo
+    RealtimeService --> LineRepo
+    RealtimeService --> TrainRepo
+
+    ExternalAPI --> Mapper --> RealtimeCache
 ```
