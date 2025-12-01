@@ -78,7 +78,7 @@ https://data.seoul.go.kr/dataList/OA-15442/S/1/datasetView.do
 
 📘 Line
 - 지하철 노선 정보
-| 컬럼명 |  설명 |
+| 필드 | 역할 |
 |--------|-------------------------------|
 | shortName | PK (노선 내 역 순번 엔트리 ID) |
 | color |  어떤 노선인지 (FK → Line.id) |
