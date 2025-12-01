@@ -35,11 +35,9 @@ https://data.seoul.go.kr/dataList/OA-15442/S/1/datasetView.do
 
 # Degine
 
- classDiagram
+```mermaid
+classDiagram
     class Station {
       +id: Long
       +name: String
-      +externalCode: String
-      +latitude: Double
-      +longitude: Double
     }
