@@ -32,3 +32,5 @@
 ### API LIST
 - 호선 별 역 정보 데이터 API
 https://data.seoul.go.kr/dataList/OA-15442/S/1/datasetView.do
+
+#Degine
