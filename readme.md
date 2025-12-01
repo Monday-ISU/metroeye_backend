@@ -39,6 +39,37 @@ https://data.seoul.go.kr/dataList/OA-15442/S/1/datasetView.do
 classDiagram
     direction LR
 
+    %% --- Enums (최상단 가로 배치) ---
+    class Direction {
+      <<enum>>
+      UP
+      DOWN
+    }
+
+    class TrainType {
+      <<enum>>
+      LOCAL
+      EXPRESS
+    }
+
+    class PositionType {
+      <<enum>>
+      AT
+      BETWEEN
+    }
+
+    class ArrivalCode {
+      <<enum>>
+      ENTERING
+      ARRIVED
+      DEPARTED
+      PREV_DEPARTED
+      PREV_ENTERING
+      PREV_ARRIVED
+      RUNNING
+    }
+
+    %% --- Domain Entities ---
     class Station {
       +id: Long
       +name: String
@@ -84,37 +115,8 @@ classDiagram
       +observedAt: String
       +etaToCenterStationSec: Int
     }
-
-    class Direction {
-      <<enum>>
-      UP
-      DOWN
-    }
-
-    class TrainType {
-      <<enum>>
-      LOCAL
-      EXPRESS
-    }
-
-    class PositionType {
-      <<enum>>
-      AT
-      BETWEEN
-    }
-
-    class ArrivalCode {
-      <<enum>>
-      ENTERING
-      ARRIVED
-      DEPARTED
-      PREV_DEPARTED
-      PREV_ENTERING
-      PREV_ARRIVED
-      RUNNING
-    }
-
-    %% 관계(카디널리티 + 라벨)
+    
+    %% --- RELATIONS(카디널리티 + 라벨) ---
     Station "1" --> "0..*" StationInLine : includedIn
     Line "1" --> "1..*" StationInLine : has
     Line "1" --> "0..*" Train : operates
