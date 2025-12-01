@@ -33,4 +33,93 @@
 - 호선 별 역 정보 데이터 API
 https://data.seoul.go.kr/dataList/OA-15442/S/1/datasetView.do
 
-#Degine
+# Degine
+classDiagram
+    %% ===== Station =====
+    class Station {
+      +Long id
+      +String name
+      +String? externalCode
+      +Double? latitude
+      +Double? longitude
+    }
+
+    %% ===== Line =====
+    class Line {
+      +Long id
+      +String name
+      +String shortName
+      +String? externalCode
+      +String? color
+    }
+
+    %% ===== StationInLine =====
+    class StationInLine {
+      +Long id
+      +Long lineId
+      +Long stationId
+      +Int seq
+      +Boolean expressStop
+    }
+
+    %% ===== Train =====
+    class Train {
+      +Long id
+      +String trainNumber
+      +Long lineId
+      +TrainType type
+      +Long destinationStationId
+    }
+
+    %% ===== Realtime =====
+    class RealtimeTrainPosition {
+      +Long id
+      +Long trainId
+      +Long lineId
+      +Direction direction
+      +PositionType positionType
+      +Long? stationInLineId
+      +Long? fromStationInLineId
+      +Long? toStationInLineId
+      +ArrivalCode arrivalCode
+      +Instant observedAt
+      +Int? etaToCenterStationSec
+    }
+
+    %% ===== Enums =====
+    class Direction {
+      <<enum>>
+      UP
+      DOWN
+    }
+
+    class TrainType {
+      <<enum>>
+      LOCAL
+      EXPRESS
+    }
+
+    class PositionType {
+      <<enum>>
+      AT
+      BETWEEN
+    }
+
+    class ArrivalCode {
+      <<enum>>
+      ENTERING(0)
+      ARRIVED(1)
+      DEPARTED(2)
+      PREV_DEPARTED(3)
+      PREV_ENTERING(4)
+      PREV_ARRIVED(5)
+      RUNNING(99)
+    }
+
+    %% ===== Relations =====
+    Station "1" --> "many" StationInLine : includedIn
+    Line "1" --> "many" StationInLine : has
+    StationInLine "1" --> "many" RealtimeTrainPosition : positionRef
+    Line "1" --> "many" Train : operates
+    Train "1" --> "many" RealtimeTrainPosition : snapshots
+
