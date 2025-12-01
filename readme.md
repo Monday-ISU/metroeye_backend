@@ -39,16 +39,18 @@ https://data.seoul.go.kr/dataList/OA-15442/S/1/datasetView.do
 classDiagram
     direction TB
 
-    %% ===== ENUMS (가로 배치) =====
+    %% Direction Enum: 열차 진행 방향
     class Direction {
       <<enum>>
       UP
       DOWN
     }
-        note right of Direction
-        열차의 진행 방향을 나타냅니다.
+   note right of Direction
+    열차의 이동 방향을 나타냅니다.
         - UP: 상행
         - DOWN: 하행
+   end note
+
     end note
     class TrainType {
       <<enum>>
