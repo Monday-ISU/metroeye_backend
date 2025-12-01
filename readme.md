@@ -110,10 +110,4 @@ https://data.seoul.go.kr/dataList/OA-15442/S/1/datasetView.do
       PREV_ARRIVED
       RUNNING
     }
-
-    Station "1" --> "many" StationInLine : includedIn
-    Line "1" --> "many" StationInLine : has
-    StationInLine "1" --> "many" RealtimeTrainPosition : positionRef
-    Line "1" --> "many" Train : operates
-    Train "1" --> "many" RealtimeTrainPosition : snapshots
 ```
