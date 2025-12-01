@@ -52,7 +52,7 @@ https://data.seoul.go.kr/dataList/OA-15442/S/1/datasetView.do
     - BETWEEN: 역과 역 사이 이동중
 
 📘 ArrivalCode (enum)
-    - 공공데이터 API의 0~5, 99 코드 매핑
+- 공공데이터 API의 0~5, 99 코드 매핑
     - ENTERING: 진입
     - ARRIVED: 도착
     - DEPARTED: 출발
