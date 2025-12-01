@@ -37,81 +37,88 @@ https://data.seoul.go.kr/dataList/OA-15442/S/1/datasetView.do
 
 ```mermaid
 classDiagram
-     class Station {
-          +id: Long
-          +name: String
-          +externalCode: String
-          +latitude: Double
-          +longitude: Double
-        }
-    
-        class Line {
-          +id: Long
-          +name: String
-          +shortName: String
-          +externalCode: String
-          +color: String
-        }
-        class StationInLine {
-          +id: Long
-          +lineId: Long
-          +stationId: Long
-          +seq: Int
-          +expressStop: Boolean
-        }
-        
-        class Train {
-          +id: Long
-          +trainNumber: String
-          +lineId: Long
-          +type: TrainType
-          +destinationStationId: Long
-        }
-        class RealtimeTrainPosition {
-          +id: Long
-          +trainId: Long
-          +lineId: Long
-          +direction: Direction
-          +positionType: PositionType
-          +stationInLineId: Long
-          +fromStationInLineId: Long
-          +toStationInLineId: Long
-          +arrivalCode: ArrivalCode
-          +observedAt: String
-          +etaToCenterStationSec: Int
-        }
-        class Direction {
-          <<enum>>
-          UP
-          DOWN
-        }
-        
-        class TrainType {
-          <<enum>>
-          LOCAL
-          EXPRESS
-        }
-        
-        class PositionType {
-          <<enum>>
-          AT
-          BETWEEN
-        }
-        
-        class ArrivalCode {
-          <<enum>>
-          ENTERING
-          ARRIVED
-          DEPARTED
-          PREV_DEPARTED
-          PREV_ENTERING
-          PREV_ARRIVED
-          RUNNING
-        }
-        
-        Station "1" --> "many" StationInLine : includedIn
-        Line "1" --> "many" StationInLine : has
-        StationInLine "1" --> "many" RealtimeTrainPosition : positionRef
-        Line "1" --> "many" Train : operates
-        Train "1" --> "many" RealtimeTrainPosition : snapshots
+    direction LR
+
+    class Station {
+      +id: Long
+      +name: String
+      +externalCode: String
+      +latitude: Double
+      +longitude: Double
+    }
+
+    class Line {
+      +id: Long
+      +name: String
+      +shortName: String
+      +externalCode: String
+      +color: String
+    }
+
+    class StationInLine {
+      +id: Long
+      +lineId: Long
+      +stationId: Long
+      +seq: Int
+      +expressStop: Boolean
+    }
+
+    class Train {
+      +id: Long
+      +trainNumber: String
+      +lineId: Long
+      +type: TrainType
+      +destinationStationId: Long
+    }
+
+    class RealtimeTrainPosition {
+      +id: Long
+      +trainId: Long
+      +lineId: Long
+      +direction: Direction
+      +positionType: PositionType
+      +stationInLineId: Long
+      +fromStationInLineId: Long
+      +toStationInLineId: Long
+      +arrivalCode: ArrivalCode
+      +observedAt: String
+      +etaToCenterStationSec: Int
+    }
+
+    class Direction {
+      <<enum>>
+      UP
+      DOWN
+    }
+
+    class TrainType {
+      <<enum>>
+      LOCAL
+      EXPRESS
+    }
+
+    class PositionType {
+      <<enum>>
+      AT
+      BETWEEN
+    }
+
+    class ArrivalCode {
+      <<enum>>
+      ENTERING
+      ARRIVED
+      DEPARTED
+      PREV_DEPARTED
+      PREV_ENTERING
+      PREV_ARRIVED
+      RUNNING
+    }
+
+    %% 관계(카디널리티 + 라벨)
+    Station "1" --> "0..*" StationInLine : includedIn
+    Line "1" --> "1..*" StationInLine : has
+    Line "1" --> "0..*" Train : operates
+    Train "1" --> "0..*" RealtimeTrainPosition : snapshots
+    StationInLine "1" --> "0..*" RealtimeTrainPosition : positionRef
+
 ```
