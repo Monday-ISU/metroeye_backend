@@ -69,11 +69,11 @@ https://data.seoul.go.kr/dataList/OA-15442/S/1/datasetView.do
 
 | 필드 | 타입 | 역할 |
 |--------|--------|-------------------------------|
-| id | Long |  내부 시스템 고유 PK |
-| name | Long | 역 이름 |
-| externalCode | Long | 공공 API 역 코드 |
-| latitude | Int | 지도 좌표(지금 은 미사용 지도 관련 기능 할 떄) |
-| longitude | Boolean | 지도 좌표(지금 은 미사용 지도 관련 기능 할 떄) |
+| id |  |  내부 시스템 고유 PK |
+| name |  | 역 이름 |
+| externalCode |  | 공공 API 역 코드 |
+| latitude |  | 지도 좌표(지금 은 미사용 지도 관련 기능 할 떄) |
+| longitude |  | 지도 좌표(지금 은 미사용 지도 관련 기능 할 떄) |
 
 
 📘 Line
