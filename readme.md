@@ -77,38 +77,36 @@ https://data.seoul.go.kr/dataList/OA-15442/S/1/datasetView.do
 | shortName | PK (노선 내 역 순번 엔트리 ID) |
 | color |  어떤 노선인지 (FK → Line.id) |
 | externalCode | 어떤 역인지 (FK → Station.id) |
-| seq |  노선 내 순번 (0부터 시작 가능) |
-| expressStop  급행 정차역 여부 |
-
-필드	         역할
-shortName	 정렬/표시용 이름
-color	     노선 색상
-externalCode 공공 API 노선 코드
 
 📘 StationInLine
-- “노선 위의 역 + 순서”를 표현하는 핵심 도메인
-필드	         역할
-lineId	    어떤 노선인지
-stationId	어떤 역인지
-seq    	    노선 내 순서
-expressStop	급행 정차 여부
+“노선 위의 역 + 순서”를 표현하는 핵심 도메인
+| 필드 | 역할 |
+|--------|------------------------------|
+| lineId | 어떤 노선인지 |
+| stationId | 어떤 역인지 |
+| seq | 노선 내 순서 |
+| expressStop | 급행 정차 여부 |
 
 📘 Train
-- 단일 열차(편성) 정보
-필드                     역할
-trainNumber	            운영사 제공 열차 번호
-type	                일반/급행
-destinationStationId	종점
+단일 열차(편성) 정보
+| 필드 | 역할 |
+|--------|------------------------------|
+| trainNumber | 운영사 제공 열차 번호 |
+| type | 일반/급행 |
+| destinationStationId | 종점 |
+| expressStop | 급행 정차 여부 |
+
 
 📘 RealtimeTrainPosition
-- 실시간 열차 위치 정보
-필드	                        역할
-direction	                상행/하행
-positionType	            AT/BETWEEN
-stationInLineId	            역 위 위치
-from / to StationInLineId	구간 위치
-arrivalCode	                진입/도착/출발 상태
-observedAt	                관측 시각
+실시간 열차 위치 정보
+| 필드 | 역할 |
+|--------|------------------------------|
+| direction | 상행/하행 |
+| positionType | AT/BETWEEN |
+| stationInLineId | 역 위 위치 |
+| from / to StationInLineId | 구간 위치 |
+| arrivalCode | 진입/도착/출발 상태 |
+| observedAt | 관측 시각 |
 
 ```mermaid
 classDiagram
