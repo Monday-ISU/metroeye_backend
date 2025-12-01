@@ -60,13 +60,7 @@ https://data.seoul.go.kr/dataList/OA-15442/S/1/datasetView.do
     - RUNNING: 운행중
     
 📘 Station
-- 지하철 역 정보를 표현
-  필드	             역할
-  id	             내부 시스템 고유 PK
-  name	             역 이름
-  externalCode	     공공 API 역 코드
-  latitude/longitude 지도 좌표(지금 은 미사용 지도 관련 기능 할 떄)
-
+지하철 역 정보를 표현
 | 필드 | 역할 |
 |--------|-------------------------------|
 | id | 내부 시스템 고유 PK |
@@ -77,7 +71,7 @@ https://data.seoul.go.kr/dataList/OA-15442/S/1/datasetView.do
 
 
 📘 Line
-- 지하철 노선 정보
+지하철 노선 정보
 | 필드 | 역할 |
 |--------|-------------------------------|
 | shortName | PK (노선 내 역 순번 엔트리 ID) |
