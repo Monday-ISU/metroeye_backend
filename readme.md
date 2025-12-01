@@ -67,9 +67,9 @@ https://data.seoul.go.kr/dataList/OA-15442/S/1/datasetView.do
   externalCode	     공공 API 역 코드
   latitude/longitude 지도 좌표(지금 은 미사용 지도 관련 기능 할 떄)
 
-| 필드 | 타입 | 역할 |
-|--------|--------|-------------------------------|
-| id |  |  내부 시스템 고유 PK |
+| 필드 | 역할 |
+|--------|-------------------------------|
+| id |  | 내부 시스템 고유 PK |
 | name |  | 역 이름 |
 | externalCode |  | 공공 API 역 코드 |
 | latitude |  | 지도 좌표(지금 은 미사용 지도 관련 기능 할 떄) |
