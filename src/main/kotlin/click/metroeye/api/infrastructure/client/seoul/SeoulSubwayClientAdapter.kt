@@ -1,14 +1,14 @@
 package click.metroeye.api.infrastructure.client.seoul
 
 import click.metroeye.api.infrastructure.client.common.WebClientAdapter
-import click.metroeye.api.infrastructure.client.seoul.dto.RealtimeArrivalInfo
+import click.metroeye.api.infrastructure.client.seoul.dto.RealtimeArrivalResponse
+import click.metroeye.api.infrastructure.client.seoul.dto.RealtimePositionResponse
 import click.metroeye.api.infrastructure.client.seoul.dto.SeoulSubwayApiResponse
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.stereotype.Component
-import org.springframework.util.StringUtils
 import reactor.core.publisher.Mono
 
 @Component
@@ -19,13 +19,13 @@ class SeoulSubwayClientAdapter(
     @Value("\${external-api.seoul-public-data.subway.api-key}")
     private val apiKey: String
 ) {
-    fun getArrivalsByStation(
+    fun getRealtimeArrivalsByStation(
         startIndex: Int,
         endIndex: Int,
-        stationName: String
-    ): Mono<SeoulSubwayApiResponse<List<RealtimeArrivalInfo>>> {
+        station: String
+    ): Mono<SeoulSubwayApiResponse<List<RealtimeArrivalResponse>>> {
         return webClientAdapter.get(
-            "http://swopenapi.seoul.go.kr/api/subway/$apiKey/json/realtimeStationArrival/$startIndex/$endIndex/$stationName",
+            "http://swopenapi.seoul.go.kr/api/subway/$apiKey/json/realtimeStationArrival/$startIndex/$endIndex/$station",
             requestParams = emptyMap(),
             responseType = object : ParameterizedTypeReference<String>() {}
         ).map { response ->
@@ -35,7 +35,7 @@ class SeoulSubwayClientAdapter(
                 val message = jsonNode.get("errorMessage").get("message").asText()
                 val data = objectMapper.readValue(
                     jsonNode.get("realtimeArrivalList").toString(),
-                    object : TypeReference<List<RealtimeArrivalInfo>>() {}
+                    object : TypeReference<List<RealtimeArrivalResponse>>() {}
                 )
 
                 SeoulSubwayApiResponse(
@@ -53,53 +53,55 @@ class SeoulSubwayClientAdapter(
                 )
             }
         }
-        .defaultIfEmpty(
-            SeoulSubwayApiResponse(
-                false,
-                "외부 API로부터 빈 응답을 받았습니다.",
-                null
+            .defaultIfEmpty(
+                SeoulSubwayApiResponse(
+                    false,
+                    "외부 API로부터 빈 응답을 받았습니다.",
+                    null
+                )
             )
-        )
+    }
 
+    fun getRealtimePositionsByLine(
+        startIndex: Int,
+        endIndex: Int,
+        line: String
+    ): Mono<SeoulSubwayApiResponse<List<RealtimePositionResponse>>> {
+        return webClientAdapter.get(
+            "http://swopenapi.seoul.go.kr/api/subway/$apiKey/json/realtimePosition/$startIndex/$endIndex/$line",
+            requestParams = emptyMap(),
+            responseType = object : ParameterizedTypeReference<String>() {}
+        ).map { response ->
+            val jsonNode = objectMapper.readTree(response)
 
+            if (jsonNode.has("errorMessage") && jsonNode.has("realtimePositionList")) {
+                val message = jsonNode.get("errorMessage").get("message").asText()
+                val data = objectMapper.readValue(
+                    jsonNode.get("realtimePositionList").toString(),
+                    object : TypeReference<List<RealtimePositionResponse>>() {}
+                )
 
+                SeoulSubwayApiResponse(
+                    true,
+                    message,
+                    data
+                )
+            } else {
+                val message = jsonNode.get("message").asText()
 
-    //        val response: String? = webClientAdapter.get(
-//            "http://swopenapi.seoul.go.kr/api/subway/$apiKey/json/realtimeStationArrival/$startIndex/$endIndex/$stationName",
-//            requestParams = emptyMap(),
-//            responseType = object : ParameterizedTypeReference<String>() {}
-//        ).block()
-
-//        if(StringUtils.hasText(response)) {
-//            val jsonNode = objectMapper.readTree(response)
-//
-//            if(jsonNode.has("errorMessage") && jsonNode.has("realtimeArrivalList")) {
-//                val message = jsonNode.get("errorMessage").get("message").asText()
-//                val data = objectMapper.readValue(
-//                    jsonNode.get("realtimeArrivalList").toString(),
-//                    object : TypeReference<List<RealtimeArrivalInfo>>() {}
-//                )
-//
-//                return SeoulSubwayApiResponse(
-//                    true,
-//                    message,
-//                    data
-//                )
-//            } else {
-//                val message = jsonNode.get("message").asText()
-//
-//                return SeoulSubwayApiResponse(
-//                    false,
-//                    message,
-//                    null
-//                )
-//            }
-//        }
-
-//        return SeoulSubwayApiResponse(
-//            false,
-//            "외부 API로부터 빈 응답을 받았습니다.",
-//            null
-//        )
+                SeoulSubwayApiResponse(
+                    false,
+                    message,
+                    null
+                )
+            }
+        }
+            .defaultIfEmpty(
+                SeoulSubwayApiResponse(
+                    false,
+                    "외부 API로부터 빈 응답을 받았습니다.",
+                    null
+                )
+            )
     }
 }
