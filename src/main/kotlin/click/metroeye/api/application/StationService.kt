@@ -1,7 +1,7 @@
 package click.metroeye.api.application
 
-import click.metroeye.api.infrastructure.client.seoul.SeoulSubwayClientAdapter
 import click.metroeye.api.application.dto.RealtimeStationArrivalRequestModel
+import click.metroeye.api.infrastructure.external.seoul.adapter.SeoulSubwayClientAdapter
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
 
