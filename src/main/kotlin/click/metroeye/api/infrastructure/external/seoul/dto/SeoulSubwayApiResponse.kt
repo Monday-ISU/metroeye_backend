@@ -1,4 +1,4 @@
-package click.metroeye.api.infrastructure.client.seoul.dto
+package click.metroeye.api.infrastructure.external.seoul.dto
 
 import org.apache.logging.log4j.message.Message
 
