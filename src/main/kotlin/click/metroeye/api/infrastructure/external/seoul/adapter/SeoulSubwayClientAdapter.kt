@@ -22,10 +22,10 @@ class SeoulSubwayClientAdapter(
     fun getRealtimeArrivalsByStation(
         startIndex: Int,
         endIndex: Int,
-        station: String
+        stationName: String
     ): Mono<SeoulSubwayApiResponse<List<RealtimeArrivalResponse>>> {
         return webClientAdapter.get(
-            "http://swopenapi.seoul.go.kr/api/subway/$apiKey/json/realtimeStationArrival/$startIndex/$endIndex/$station",
+            "http://swopenapi.seoul.go.kr/api/subway/$apiKey/json/realtimeStationArrival/$startIndex/$endIndex/$stationName",
             requestParams = emptyMap(),
             responseType = object : ParameterizedTypeReference<String>() {}
         ).map { response ->
@@ -65,10 +65,10 @@ class SeoulSubwayClientAdapter(
     fun getRealtimePositionsByLine(
         startIndex: Int,
         endIndex: Int,
-        line: String
+        lineName: String
     ): Mono<SeoulSubwayApiResponse<List<RealtimePositionResponse>>> {
         return webClientAdapter.get(
-            "http://swopenapi.seoul.go.kr/api/subway/$apiKey/json/realtimePosition/$startIndex/$endIndex/$line",
+            "http://swopenapi.seoul.go.kr/api/subway/$apiKey/json/realtimePosition/$startIndex/$endIndex/$lineName",
             requestParams = emptyMap(),
             responseType = object : ParameterizedTypeReference<String>() {}
         ).map { response ->

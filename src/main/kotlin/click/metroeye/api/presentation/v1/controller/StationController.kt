@@ -17,14 +17,14 @@ import reactor.core.publisher.Mono
 class StationController(
     private val subwayService: StationService
 ) {
-    @GetMapping(path = ["/{station}/arrivals/realtime"], produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping(path = ["/{stationName}/arrivals/realtime"], produces = [MediaType.APPLICATION_JSON_VALUE])
     fun getRealtimeArrivalsByStation(
-        @PathVariable station: String,
+        @PathVariable stationName: String,
         realtimeStationArrivalRequest: RealtimeStationArrivalRequest
     ): Mono<ResponseEntity<ApiResponse<Map<String, Any?>>>> {
         val realtimeStationArrivalRequestModel = RealtimeStationArrivalRequestModel(
-            station,
-            realtimeStationArrivalRequest.line
+            stationName,
+            realtimeStationArrivalRequest.lineName
         )
 
         return subwayService.getArrivalsByStation(realtimeStationArrivalRequestModel)

@@ -14,10 +14,10 @@ class StationService(
     ): Mono<Map<String, Any?>> {
         val startIndex = 1
         val endIndex = 100
-        val station = realtimeStationArrivalRequestModel.station
-        val line = realtimeStationArrivalRequestModel.line
-        val realtimeArrivalResponseMono = seoulSubwayClientAdapter.getRealtimeArrivalsByStation(startIndex, endIndex, station)
-        val realtimePositionResponseMono = seoulSubwayClientAdapter.getRealtimePositionsByLine(startIndex, endIndex, line)
+        val stationName = realtimeStationArrivalRequestModel.stationName
+        val lineName = realtimeStationArrivalRequestModel.lineName
+        val realtimeArrivalResponseMono = seoulSubwayClientAdapter.getRealtimeArrivalsByStation(startIndex, endIndex, stationName)
+        val realtimePositionResponseMono = seoulSubwayClientAdapter.getRealtimePositionsByLine(startIndex, endIndex, lineName)
 
         return Mono.zip(realtimeArrivalResponseMono, realtimePositionResponseMono)
             .map { tuple ->
