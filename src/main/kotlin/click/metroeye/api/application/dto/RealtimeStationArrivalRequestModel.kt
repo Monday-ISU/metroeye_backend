@@ -3,14 +3,14 @@ package click.metroeye.api.application.dto
 import click.metroeye.api.exception.ApiException
 
 class RealtimeStationArrivalRequestModel(
-    val station: String,
-    val line: String
+    val stationName: String,
+    val lineName: String
 ) {
     init {
-        if (line.isBlank()) {
+        if (lineName.isBlank()) {
             throw ApiException(
-                "노선 정보가 누락되었습니다.",
-                "RealtimeStationArrivalRequestModel.line is blank."
+                "노선 이름이 누락되었습니다.",
+                "RealtimeStationArrivalRequestModel.lineName is blank."
             )
         }
     }
