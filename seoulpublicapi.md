@@ -132,7 +132,7 @@
 
 ### 서울교통공사_노선별 지하철역 정보
 
-#### [API Path] http://swopenapi.seoul.go.kr/api/subway/{KEY}/json/realtimePosition/{START_INDEX}/{END_INDEX}/{STATION_CD}/{STATION_NM}/{LINE_NUM}
+#### [API Path] http://openapi.seoul.go.kr:8088/{KEY}/json/SearchSTNBySubwayLineInfo/{START_INDEX}/{END_INDEX}/{STATION_CD}/{STATION_NM}/{LINE_NUM}
 
 #### [Path Variable]
 - KEY: 인증키
