@@ -4,16 +4,9 @@ spring:
       on-profile: local
     import: application-secret.yml
 
-springdoc:
-  default-consumes-media-type: application/json
-  default-produces-media-type: application/json
-  swagger-ui:
-    use-root-path: true
-    tags-sorter: alpha
-    operations-sorter: method
-    default-model-expand-depth: 2
-
 logging:
   level:
     click.metroeye.api: debug
     org.springframework: info
+    o.r2dbc.mysql: debug
+    io.r2dbc.pool: debug

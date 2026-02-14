@@ -6,6 +6,15 @@ spring:
     ansi:
       enabled: always
 
+springdoc:
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  swagger-ui:
+    use-root-path: true
+    tags-sorter: alpha
+    operations-sorter: method
+    default-model-expand-depth: 2
+
 management:
   server:
     port: 8080
