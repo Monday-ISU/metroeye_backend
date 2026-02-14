@@ -67,6 +67,11 @@ jobs:
               --network proxy \
               -e TZ=Asia/Seoul \
               -e SPRING_PROFILES_ACTIVE=dev \
+              -e DB_DEV_MASTER_HOST=${{ secrets.DB_DEV_MASTER_HOST }} \
+              -e DB_DEV_MASTER_PORT=${{ secrets.DB_DEV_MASTER_PORT }} \
+              -e DB_DEV_NAME=${{ secrets.DB_DEV_NAME }} \
+              -e DB_DEV_MASTER_USERNAME=${{ secrets.DB_DEV_MASTER_USERNAME }} \
+              -e DB_DEV_MASTER_PASSWORD=${{ secrets.DB_DEV_MASTER_PASSWORD }} \
               -e SEOUL_SUBWAY_API_KEY=${{ secrets.SEOUL_SUBWAY_API_KEY }} \
               -p 8080:8080 \
               ghcr.io/$LOWER_GHCR_USERNAME/metroeye-backend:dev

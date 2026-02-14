@@ -2,20 +2,32 @@ spring:
   config:
     activate:
       on-profile: dev
+  r2dbc:
+    master:
+      url: r2dbc:mysql://${DB_DEV_MASTER_HOST}:${DB_DEV_MASTER_PORT}/${DB_DEV_NAME}?serverTimezone=Asia/Seoul
+      username: ${DB_DEV_MASTER_USERNAME}
+      password: ${DB_DEV_MASTER_PASSWORD}
+      pool:
+        enabled: true
+        initial-size: 10
+        max-idle-time: 30m
+        max-life-time: 60m
+        validation-query: SELECT 1
+    slave:
+      url: r2dbc:mysql://${DB_DEV_MASTER_HOST}:${DB_DEV_MASTER_PORT}/${DB_DEV_NAME}?serverTimezone=Asia/Seoul
+      username: ${DB_DEV_MASTER_USERNAME}
+      password: ${DB_DEV_MASTER_PASSWORD}
+      pool:
+        enabled: true
+        initial-size: 10
+        max-idle-time: 30m
+        max-life-time: 60m
+        validation-query: SELECT 1
 
 external-api:
   seoul-public-data:
     subway:
       api-key: ${SEOUL_SUBWAY_API_KEY}
-
-springdoc:
-  default-consumes-media-type: application/json
-  default-produces-media-type: application/json
-  swagger-ui:
-    use-root-path: true
-    tags-sorter: alpha
-    operations-sorter: method
-    default-model-expand-depth: 2
 
 logging:
   level:
