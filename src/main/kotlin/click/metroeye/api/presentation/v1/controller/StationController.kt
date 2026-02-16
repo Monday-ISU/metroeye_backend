@@ -1,6 +1,6 @@
 package click.metroeye.api.presentation.v1.controller
 
-import click.metroeye.api.application.StationService
+import click.metroeye.api.application.service.StationService
 import click.metroeye.api.application.dto.RealtimeStationArrivalRequestModel
 import click.metroeye.api.presentation.v1.dto.request.RealtimeStationArrivalRequest
 import click.metroeye.api.presentation.v1.dto.response.ApiResponse
