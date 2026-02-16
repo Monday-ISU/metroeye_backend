@@ -23,7 +23,14 @@ class DeviceController(
     @Operation(
         summary = "신규 기기 등록 및 인증 토큰 발급 API",
         method = "POST",
-        description = "신규 기기를 등록하고 인증 토큰을 발급합니다."
+        description = """
+*신규 기기를 등록하고 인증 토큰을 발급합니다.*
+
+### [Request Body]
+
+- **uuid**: 기기 고유 번호
+- **osType**: OS 유형 (ANDROID, IOS)
+"""
     )
     @PostMapping
     fun createDevice(
