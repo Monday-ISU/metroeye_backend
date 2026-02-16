@@ -12,13 +12,13 @@ class DeviceRepositoryAdapter(
 ) {
     fun loadDevice(uuid: String): Mono<Device> {
         return deviceRepository.findByUuid(uuid)
-            .map { deviceEntity ->
+            .map { loadedDeviceEntity ->
                 Device.of(
-                    deviceEntity.idx,
-                    deviceEntity.uuid,
-                    deviceEntity.secret,
-                    deviceEntity.osType,
-                    deviceEntity.refreshToken
+                    loadedDeviceEntity.idx,
+                    loadedDeviceEntity.uuid,
+                    loadedDeviceEntity.secret,
+                    loadedDeviceEntity.osType,
+                    loadedDeviceEntity.refreshToken
                 )
             }
     }
