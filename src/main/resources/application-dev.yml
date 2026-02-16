@@ -24,6 +24,9 @@ spring:
         max-life-time: 60m
         validation-query: SELECT 1
 
+jwt:
+  secret: ${JWT_SECRET}
+
 external-api:
   seoul-public-data:
     subway:
