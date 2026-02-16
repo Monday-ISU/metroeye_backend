@@ -23,7 +23,21 @@ class AuthController(
     @Operation(
         summary = "토큰 발급 API",
         method = "POST",
-        description = "인증 유형에 따른 토큰을 발급합니다."
+        description = """
+*인증 유형에 따른 토큰을 발급합니다.*
+
+### [Request Body]
+
+- **grantType**: 인증 유형 (CLIENT_CREDENTIALS, REFRESH_TOKEN)
+- **uuid**: 기기 고유 번호
+- **secret**: 기기 비밀키
+- **refreshToken**: 리프레시 토큰
+
+### [인증 방식 설명]
+
+- **CLIENT_CREDENTIALS**: uuid와 secret을 사용하여 토큰 발급
+- **REFRESH_TOKEN**: refreshToken을 사용하여 액세스 토큰 재발급
+"""
     )
     @PostMapping("/token")
     fun issueToken(
