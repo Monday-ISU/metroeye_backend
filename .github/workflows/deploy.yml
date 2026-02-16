@@ -72,6 +72,7 @@ jobs:
               -e DB_DEV_NAME=${{ secrets.DB_DEV_NAME }} \
               -e DB_DEV_MASTER_USERNAME=${{ secrets.DB_DEV_MASTER_USERNAME }} \
               -e DB_DEV_MASTER_PASSWORD=${{ secrets.DB_DEV_MASTER_PASSWORD }} \
+              -e JWT_SECRET=${{ secrets.JWT_SECRET }} \
               -e SEOUL_SUBWAY_API_KEY=${{ secrets.SEOUL_SUBWAY_API_KEY }} \
               -p 8080:8080 \
               ghcr.io/$LOWER_GHCR_USERNAME/metroeye-backend:dev

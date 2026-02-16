@@ -12,7 +12,7 @@ class ApiExceptionHandler {
     fun exception(e: Exception): ResponseEntity<ApiResponse<Void?>> {
         return when (e) {
             is ApiException -> {
-                ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                ResponseEntity.status(e.status)
                     .body(
                         ApiResponse(
                             e.clientMessage,
@@ -27,7 +27,7 @@ class ApiExceptionHandler {
                     .body(
                         ApiResponse(
                             "서버 오류가 발생했습니다.",
-                            e.message ?: "UNKNOWN SERVER ERROR",
+                            e.message ?: "Unknown server error.",
                             null
                         )
                     )

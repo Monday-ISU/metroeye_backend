@@ -8,5 +8,6 @@ logging:
   level:
     click.metroeye.api: debug
     org.springframework: info
-    o.r2dbc.mysql: debug
-    io.r2dbc.pool: debug
+#    org.springframework.r2dbc: debug
+#    io.r2dbc.pool: debug
+#    io.asyncer.r2dbc.mysql: debug
