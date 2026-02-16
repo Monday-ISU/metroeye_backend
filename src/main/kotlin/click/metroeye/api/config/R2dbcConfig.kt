@@ -12,11 +12,41 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
 import org.springframework.r2dbc.connection.R2dbcTransactionManager
+import org.springframework.r2dbc.connection.lookup.AbstractRoutingConnectionFactory
+import org.springframework.transaction.TransactionDefinition
+import org.springframework.transaction.reactive.TransactionSynchronizationManager
+import reactor.core.publisher.Mono
 
 @Configuration
 @EnableConfigurationProperties(R2dbcProperties::class)
 class R2dbcConfig {
     @Primary
+    @Bean("routingConnectionFactory")
+    fun routingConnectionFactory(
+        @Qualifier("masterConnectionFactory") masterConnectionFactory: ConnectionFactory,
+        @Qualifier("slaveConnectionFactory") slaveConnectionFactory: ConnectionFactory
+    ): ConnectionFactory {
+        val routingConnectionFactory = object : AbstractRoutingConnectionFactory() {
+            override fun determineCurrentLookupKey(): Mono<Any> {
+                return Mono.deferContextual { contextView ->
+                    val dbType = contextView.getOrDefault("DB_TYPE", "MASTER") ?: "MASTER"
+                    Mono.just(dbType)
+                }
+            }
+        }
+
+        routingConnectionFactory.setTargetConnectionFactories(
+            mapOf(
+                "MASTER" to masterConnectionFactory,
+                "SLAVE" to slaveConnectionFactory
+            )
+        )
+
+        routingConnectionFactory.setDefaultTargetConnectionFactory(masterConnectionFactory)
+        routingConnectionFactory.afterPropertiesSet()
+        return routingConnectionFactory
+    }
+
     @Bean("masterConnectionFactory")
     fun masterConnectionFactory(r2dbcProperties: R2dbcProperties): ConnectionFactory {
         val master = r2dbcProperties.master
@@ -69,8 +99,20 @@ class R2dbcConfig {
 
     @Bean
     fun transactionManager(
-        @Qualifier("masterConnectionFactory") masterConnectionFactory: ConnectionFactory,
+        @Qualifier("routingConnectionFactory") routingConnectionFactory: ConnectionFactory,
     ): R2dbcTransactionManager {
-        return R2dbcTransactionManager(masterConnectionFactory)
+        return object: R2dbcTransactionManager(routingConnectionFactory) {
+            override fun doBegin(
+                synchronizationManager: TransactionSynchronizationManager,
+                transaction: Any,
+                definition: TransactionDefinition
+            ): Mono<Void> {
+                val dbType = if (definition.isReadOnly) "SLAVE" else "MASTER"
+                return super.doBegin(synchronizationManager, transaction, definition)
+                    .contextWrite { context ->
+                        context.put("DB_TYPE", dbType)
+                    }
+            }
+        }
     }
 }
