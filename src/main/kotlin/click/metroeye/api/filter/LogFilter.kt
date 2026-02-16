@@ -14,6 +14,12 @@ class LogFilter : WebFilter {
     }
 
     override fun filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<Void?> {
+        val path = exchange.request.uri.path
+
+        if (!path.startsWith("/v1")) {
+            return chain.filter(exchange)
+        }
+
         logger.info("""
             
             
