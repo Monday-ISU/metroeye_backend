@@ -51,7 +51,7 @@ class SecurityConfig {
     ): SecurityWebFilterChain {
         return http
             .securityMatcher(ServerWebExchangeMatchers.pathMatchers(
-                "/v1/stations/**"
+                "/v1/lines/**"
             ))
             .csrf { it.disable() }
             .httpBasic { it.disable() }
