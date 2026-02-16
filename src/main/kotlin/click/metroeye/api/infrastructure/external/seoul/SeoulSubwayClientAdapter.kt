@@ -1,9 +1,9 @@
 package click.metroeye.api.infrastructure.external.seoul
 
-import click.metroeye.api.infrastructure.external.common.WebClientAdapter
 import click.metroeye.api.infrastructure.external.seoul.dto.RealtimeArrivalResponse
 import click.metroeye.api.infrastructure.external.seoul.dto.RealtimePositionResponse
 import click.metroeye.api.infrastructure.external.seoul.dto.SeoulSubwayApiResponse
+import click.metroeye.api.infrastructure.external.common.WebClientAdapter
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.beans.factory.annotation.Value
