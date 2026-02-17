@@ -2,11 +2,40 @@ spring:
   config:
     activate:
       on-profile: local
-    import: application-secret.yml
+    import: optional:file:.env[.properties]
+  r2dbc:
+    master:
+      url: r2dbc:mysql://${DB_DEV_MASTER_HOST}:${DB_DEV_MASTER_PORT}/${DB_DEV_NAME}?serverTimezone=Asia/Seoul
+      username: ${DB_DEV_MASTER_USERNAME}
+      password: ${DB_DEV_MASTER_PASSWORD}
+      pool:
+        enabled: true
+        initial-size: 10
+        max-idle-time: 30m
+        max-life-time: 60m
+        validation-query: SELECT 1
+    slave:
+      url: r2dbc:mysql://${DB_DEV_MASTER_HOST}:${DB_DEV_MASTER_PORT}/${DB_DEV_NAME}?serverTimezone=Asia/Seoul
+      username: ${DB_DEV_MASTER_USERNAME}
+      password: ${DB_DEV_MASTER_PASSWORD}
+      pool:
+        enabled: true
+        initial-size: 10
+        max-idle-time: 30m
+        max-life-time: 60m
+        validation-query: SELECT 1
+
+jwt:
+  secret: ${JWT_SECRET}
+
+external-api:
+  seoul-public-data:
+    subway:
+      api-key: ${SEOUL_SUBWAY_API_KEY}
 
 logging:
   level:
-    click.metroeye.api: debug
+    click.metroeye.api: info
     org.springframework: info
 #    org.springframework.r2dbc: debug
 #    io.r2dbc.pool: debug
