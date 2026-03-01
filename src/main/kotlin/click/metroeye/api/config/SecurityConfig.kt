@@ -1,12 +1,12 @@
 package click.metroeye.api.config
 
+import click.metroeye.api.constants.ErrorCode
 import click.metroeye.api.infrastructure.security.filter.BearerAuthenticationWebFilter
 import click.metroeye.api.presentation.v1.dto.response.ApiResponse
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.annotation.Order
-import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder
@@ -62,11 +62,14 @@ class SecurityConfig {
             .exceptionHandling {
                 it.authenticationEntryPoint { exchange, exception ->
                     val response = exchange.response
-                    response.statusCode = HttpStatus.UNAUTHORIZED
+                    val errorCode = ErrorCode.AUTHENTICATION_REQUIRED
+
+                    response.statusCode = errorCode.status
                     response.headers.contentType = MediaType.APPLICATION_JSON
+
                     val apiResponse = ApiResponse(
-                        "인증에 실패했습니다.",
-                        "Access token is missing.",
+                        errorCode.clientMessage,
+                        errorCode.serverMessage,
                         null
                     )
 

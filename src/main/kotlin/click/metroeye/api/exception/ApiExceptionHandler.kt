@@ -11,8 +11,8 @@ class ApiExceptionHandler {
     @ExceptionHandler(Exception::class)
     fun exception(e: Exception): ResponseEntity<ApiResponse<Void?>> {
         return when (e) {
-            is ApiException -> {
-                ResponseEntity.status(e.status)
+            is InvalidDeviceException -> {
+                ResponseEntity.status(e.errorCode.status)
                     .body(
                         ApiResponse(
                             e.clientMessage,
@@ -21,7 +21,16 @@ class ApiExceptionHandler {
                         )
                     )
             }
-
+            is InvalidAuthException -> {
+                ResponseEntity.status(e.errorCode.status)
+                    .body(
+                        ApiResponse(
+                            e.clientMessage,
+                            e.serverMessage,
+                            null
+                        )
+                    )
+            }
             else -> {
                 ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(

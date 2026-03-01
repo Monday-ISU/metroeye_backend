@@ -1,16 +1,16 @@
 package click.metroeye.api.application.service
 
 import click.metroeye.api.application.dto.IssueTokenRequestModel
+import click.metroeye.api.constants.ErrorCode
 import click.metroeye.api.constants.GrantType
 import click.metroeye.api.domain.Device
-import click.metroeye.api.exception.ApiException
+import click.metroeye.api.exception.InvalidAuthException
 import click.metroeye.api.infrastructure.crypto.token.JsonWebTokenAdapter
 import click.metroeye.api.infrastructure.persistence.DeviceRepositoryAdapter
 import click.metroeye.api.presentation.v1.dto.response.IssueTokenResponse
 import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.JwtException
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import reactor.core.publisher.Mono
@@ -34,10 +34,9 @@ class AuthService(
                     .flatMap { loadedDevice ->
                         if (!loadedDevice.authenticate(secret)) {
                             return@flatMap Mono.error(
-                                ApiException(
-                                    HttpStatus.UNAUTHORIZED,
-                                    "인증에 실패했습니다.",
-                                    "Device secret does not match."
+                                InvalidAuthException(
+                                    errorCode = ErrorCode.AUTHENTICATION_FAILED,
+                                    serverMessage = "Device secret does not match."
                                 )
                             )
                         }
@@ -69,10 +68,9 @@ class AuthService(
                     }
                     .switchIfEmpty(
                         Mono.error(
-                            ApiException(
-                                HttpStatus.UNAUTHORIZED,
-                                "인증에 실패했습니다.",
-                                "Device not found."
+                            InvalidAuthException(
+                                errorCode = ErrorCode.AUTHENTICATION_FAILED,
+                                serverMessage = "Device not found."
                             )
                         )
                     )
@@ -83,33 +81,29 @@ class AuthService(
                 val claims = try {
                     jsonWebTokenAdapter.parseClaims(refreshToken, jwtSecret)
                 } catch (e: ExpiredJwtException) {
-                    throw ApiException(
-                        HttpStatus.UNAUTHORIZED,
-                        "인증에 실패했습니다.",
-                        "Refresh token has expired."
+                    throw InvalidAuthException(
+                        errorCode = ErrorCode.EXPIRED_TOKEN,
+                        serverMessage = "Refresh token has expired."
                     )
                 } catch (e: JwtException) {
-                    throw ApiException(
-                        HttpStatus.UNAUTHORIZED,
-                        "인증에 실패했습니다.",
-                        "Refresh token is invalid."
+                    throw InvalidAuthException(
+                        errorCode = ErrorCode.INVALID_TOKEN,
+                        serverMessage = "Refresh token is invalid."
                     )
                 }
 
-                val uuid = claims.subject ?: throw ApiException(
-                    HttpStatus.UNAUTHORIZED,
-                    "인증에 실패했습니다.",
-                    "Refresh token subject is missing."
+                val uuid = claims.subject ?: throw InvalidAuthException(
+                    errorCode = ErrorCode.INVALID_TOKEN,
+                    serverMessage = "Refresh token subject is missing."
                 )
 
                 deviceRepositoryAdapter.loadDevice(uuid)
                     .flatMap { loadedDevice ->
                         if (!loadedDevice.validateRefreshToken(refreshToken)) {
                             return@flatMap Mono.error(
-                                ApiException(
-                                    HttpStatus.UNAUTHORIZED,
-                                    "인증에 실패했습니다.",
-                                    "Refresh token does not match."
+                                InvalidAuthException(
+                                    errorCode = ErrorCode.INVALID_TOKEN,
+                                    serverMessage = "Refresh token does not match."
                                 )
                             )
                         }
@@ -131,10 +125,9 @@ class AuthService(
                     }
                     .switchIfEmpty(
                         Mono.error(
-                            ApiException(
-                                HttpStatus.UNAUTHORIZED,
-                                "인증에 실패했습니다.",
-                                "Device not found."
+                            InvalidAuthException(
+                                errorCode = ErrorCode.AUTHENTICATION_FAILED,
+                                serverMessage = "Device not found."
                             )
                         )
                     )
