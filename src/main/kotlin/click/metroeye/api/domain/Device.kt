@@ -10,8 +10,8 @@ class Device private constructor(
     var refreshToken: String? = null
 ) {
     companion object {
-        const val ACCESS_TOKEN_EXPIRATION_SECONDS = 30 * 60L
-        const val REFRESH_TOKEN_EXPIRATION_SECONDS = 60 * 60 * 24 * 30L
+        const val ACCESS_TOKEN_EXPIRATION_SECONDS = 3 * 60L
+        const val REFRESH_TOKEN_EXPIRATION_SECONDS = 5 * 60L
 
         fun create(uuid: String, secret: String, osType: OsType): Device {
             return Device(null, uuid, secret, osType)
