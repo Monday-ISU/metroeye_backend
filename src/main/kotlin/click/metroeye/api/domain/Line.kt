@@ -1,9 +1,9 @@
 package click.metroeye.api.domain
 
 class Line(
-    val idx: Long?,
+    val id: Long?,
     val name: String,
-    val code: String,
+    val externalCode: String,
     val color: String
 ) {
 }

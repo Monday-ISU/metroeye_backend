@@ -14,7 +14,7 @@ class DeviceRepositoryAdapter(
         return deviceRepository.findByUuid(uuid)
             .map { loadedDeviceEntity ->
                 Device.of(
-                    loadedDeviceEntity.idx,
+                    loadedDeviceEntity.id,
                     loadedDeviceEntity.uuid,
                     loadedDeviceEntity.secret,
                     loadedDeviceEntity.osType,
@@ -25,7 +25,7 @@ class DeviceRepositoryAdapter(
 
     fun saveDevice(device: Device): Mono<Device> {
         val deviceEntity = DeviceEntity(
-            device.idx,
+            device.id,
             device.uuid,
             device.secret,
             device.osType.name,
@@ -35,7 +35,7 @@ class DeviceRepositoryAdapter(
         return deviceRepository.save(deviceEntity)
             .map { savedDeviceEntity ->
                 Device.of(
-                    savedDeviceEntity.idx,
+                    savedDeviceEntity.id,
                     savedDeviceEntity.uuid,
                     savedDeviceEntity.secret,
                     savedDeviceEntity.osType,
