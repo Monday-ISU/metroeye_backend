@@ -18,7 +18,7 @@ class LineService(
                     LineResponse(
                         loadedLine.id,
                         loadedLine.name,
-                        loadedLine.externalCode,
+                        loadedLine.code,
                         loadedLine.color
                     )
                 }
