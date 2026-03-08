@@ -6,11 +6,11 @@ import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
 import java.time.LocalDateTime
 
-@Table("DEVICES")
+@Table("devices")
 data class DeviceEntity(
     @Id
-    @Column("idx")
-    val idx: Long? = null,
+    @Column("id")
+    val id: Long? = null,
     @Column("uuid")
     val uuid: String,
     @Column("secret")

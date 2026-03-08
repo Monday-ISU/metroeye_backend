@@ -13,7 +13,7 @@ class LineRepositoryAdapter(
         return lineRepository.findAllByOrderByDisplayOrderAsc()
             .map { loadedLineEntity ->
                 Line(
-                    loadedLineEntity.idx,
+                    loadedLineEntity.id,
                     loadedLineEntity.name,
                     loadedLineEntity.code,
                     loadedLineEntity.color

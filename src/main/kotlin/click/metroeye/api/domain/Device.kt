@@ -3,7 +3,7 @@ package click.metroeye.api.domain
 import click.metroeye.api.constants.OsType
 
 class Device private constructor(
-    val idx: Long?,
+    val id: Long?,
     val uuid: String,
     var secret: String,
     val osType: OsType,
@@ -17,9 +17,9 @@ class Device private constructor(
             return Device(null, uuid, secret, osType)
         }
 
-        fun of(idx: Long?, uuid: String, secret: String, osType: String, refreshToken: String?): Device {
+        fun of(id: Long?, uuid: String, secret: String, osType: String, refreshToken: String?): Device {
             return Device(
-                idx,
+                id,
                 uuid,
                 secret,
                 OsType.valueOf(osType),

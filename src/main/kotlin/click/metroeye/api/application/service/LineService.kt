@@ -16,9 +16,9 @@ class LineService(
             .map { loadedLines ->
                 loadedLines.map { loadedLine ->
                     LineResponse(
-                        loadedLine.idx,
+                        loadedLine.id,
                         loadedLine.name,
-                        loadedLine.code,
+                        loadedLine.externalCode,
                         loadedLine.color
                     )
                 }

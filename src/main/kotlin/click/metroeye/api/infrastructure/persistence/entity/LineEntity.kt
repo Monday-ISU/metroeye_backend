@@ -6,11 +6,11 @@ import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
 import java.time.LocalDateTime
 
-@Table("`LINES`")
+@Table("lines")
 data class LineEntity(
     @Id
-    @Column("idx")
-    val idx: Long? = null,
+    @Column("id")
+    val id: Long? = null,
     @Column("name")
     val name: String,
     @Column("code")
