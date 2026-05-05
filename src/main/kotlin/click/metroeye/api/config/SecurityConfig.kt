@@ -13,6 +13,8 @@ import org.springframework.security.config.annotation.web.reactive.EnableWebFlux
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder
 import org.springframework.security.config.web.server.ServerHttpSecurity
 import org.springframework.security.web.server.SecurityWebFilterChain
+import org.springframework.security.web.server.util.matcher.AndServerWebExchangeMatcher
+import org.springframework.security.web.server.util.matcher.NegatedServerWebExchangeMatcher
 import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatchers
 import reactor.core.publisher.Mono
 
@@ -54,18 +56,23 @@ class SecurityConfig {
 
         return http
             .securityMatcher(
-                ServerWebExchangeMatchers.pathMatchers(
-                    "/v1/**"
+                AndServerWebExchangeMatcher(
+                    ServerWebExchangeMatchers.pathMatchers(
+                        "/v1/**"
+                    ),
+                    NegatedServerWebExchangeMatcher(
+                        ServerWebExchangeMatchers.pathMatchers(
+                            "/v1/devices",
+                            "/v1/auth/**"
+                        )
+                    )
                 )
             )
             .csrf { it.disable() }
             .httpBasic { it.disable() }
             .formLogin { it.disable() }
             .authorizeExchange {
-                it.pathMatchers(
-                    "/v1/devices/**",
-                    "/v1/auth/**"
-                ).permitAll().anyExchange().authenticated()
+                it.anyExchange().authenticated()
             }
             .exceptionHandling {
                 it.authenticationEntryPoint { exchange, exception ->

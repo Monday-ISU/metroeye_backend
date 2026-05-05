@@ -1,8 +1,12 @@
 package click.metroeye.api.filter
 
+import click.metroeye.api.decorator.CachedContentServerHttpRequest
 import click.metroeye.api.decorator.CachedContentServerHttpResponse
-import click.metroeye.api.util.RequestHeaderUtils
+import click.metroeye.api.util.getClientIp
+import click.metroeye.api.util.toHeadersString
 import org.slf4j.LoggerFactory
+import org.springframework.core.io.buffer.DataBufferUtils
+import org.springframework.http.MediaType
 import org.springframework.web.server.ServerWebExchange
 import org.springframework.web.server.WebFilter
 import org.springframework.web.server.WebFilterChain
@@ -14,32 +18,33 @@ class LogFilter : WebFilter {
     }
 
     override fun filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<Void?> {
-        val path = exchange.request.uri.path
-
-        if (!path.startsWith("/v1")) {
+        if (!exchange.request.uri.path.startsWith("/v1")) {
             return chain.filter(exchange)
         }
 
-        logger.info("""
-            
-            
-            |[REQUEST]
-            |>> METHOD: ${exchange.request.method}
-            |>> REQUEST URI: ${exchange.request.uri.path}
-            |>> CLIENT IP: ${RequestHeaderUtils.getClientIp(exchange.request)}
-            |>> HEADERS: ${RequestHeaderUtils.getStringHeaders(exchange.request)}
-            |>> REQUEST PARAM: ${exchange.request.queryParams}
-            """.trimIndent()
-        )
-
+        val cachingRequest = CachedContentServerHttpRequest(exchange.request)
         val cachingResponse = CachedContentServerHttpResponse(exchange.response)
 
         val mutatedExchange = exchange.mutate()
+            .request(cachingRequest)
             .response(cachingResponse)
             .build()
 
         return chain.filter(mutatedExchange)
             .doFinally {
+                logger.info("""
+            
+            
+                    |[REQUEST]
+                    |>> METHOD: ${exchange.request.method}
+                    |>> REQUEST URI: ${exchange.request.uri.path}
+                    |>> CLIENT IP: ${exchange.request.headers.getClientIp()}
+                    |>> HEADERS: ${exchange.request.headers.toHeadersString()}
+                    |>> REQUEST PARAM: ${exchange.request.queryParams.takeIf { it.isNotEmpty() } ?: ""}
+                    |>> REQUEST BODY: ${cachingRequest.getCachedContent().replace(Regex("\\s+"), "").trim()}
+                    """.trimIndent()
+                )
+
                 val status = exchange.response.statusCode?.value() ?: 200
 
                 logger.info("""
