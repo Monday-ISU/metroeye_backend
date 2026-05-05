@@ -97,6 +97,18 @@ class AuthService(
                     serverMessage = "Refresh token subject is missing."
                 )
 
+                val tokenType = claims["type"] as? String ?: throw InvalidAuthException(
+                    errorCode = ErrorCode.INVALID_TOKEN,
+                    serverMessage = "Token type is missing."
+                )
+
+                if (tokenType != "REFRESH") {
+                    throw InvalidAuthException(
+                        errorCode = ErrorCode.INVALID_TOKEN,
+                        serverMessage = "Token is not an refresh token."
+                    )
+                }
+
                 deviceRepositoryAdapter.loadDevice(uuid)
                     .flatMap { loadedDevice ->
                         if (!loadedDevice.validateRefreshToken(refreshToken)) {

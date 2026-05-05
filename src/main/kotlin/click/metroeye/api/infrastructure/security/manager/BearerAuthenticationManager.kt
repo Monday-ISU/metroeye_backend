@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
 
 @Component
-    class BearerAuthenticationManager(
+class BearerAuthenticationManager(
     private val jsonWebTokenAdapter: JsonWebTokenAdapter,
 
     @Value("\${jwt.secret}")
