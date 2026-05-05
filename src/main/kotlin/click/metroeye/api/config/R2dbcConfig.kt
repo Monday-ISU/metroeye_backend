@@ -1,6 +1,6 @@
 package click.metroeye.api.config
 
-import click.metroeye.api.properties.R2dbcProperties
+import click.metroeye.api.config.properties.R2dbcProperties
 import io.r2dbc.pool.ConnectionPool
 import io.r2dbc.pool.ConnectionPoolConfiguration
 import io.r2dbc.spi.ConnectionFactories
@@ -20,99 +20,77 @@ import reactor.core.publisher.Mono
 @Configuration
 @EnableConfigurationProperties(R2dbcProperties::class)
 class R2dbcConfig {
+    @Bean("masterConnectionFactory")
+    fun masterConnectionFactory(r2dbcProperties: R2dbcProperties): ConnectionFactory =
+        buildConnectionFactory(r2dbcProperties.master)
+
+    @Bean("slaveConnectionFactory")
+    fun slaveConnectionFactory(r2dbcProperties: R2dbcProperties): ConnectionFactory =
+        buildConnectionFactory(r2dbcProperties.slave)
+
     @Primary
     @Bean("routingConnectionFactory")
     fun routingConnectionFactory(
         @Qualifier("masterConnectionFactory") masterConnectionFactory: ConnectionFactory,
         @Qualifier("slaveConnectionFactory") slaveConnectionFactory: ConnectionFactory
-    ): ConnectionFactory {
-        val routingConnectionFactory = object : AbstractRoutingConnectionFactory() {
-            override fun determineCurrentLookupKey(): Mono<Any> {
-                return Mono.deferContextual { contextView ->
-                    val dbType = contextView.getOrDefault("DB_TYPE", "MASTER") ?: "MASTER"
-                    Mono.just(dbType)
-                }
-            }
-        }
+    ): ConnectionFactory = buildRoutingConnectionFactory(masterConnectionFactory, slaveConnectionFactory)
 
-        routingConnectionFactory.setTargetConnectionFactories(
+    private fun buildConnectionFactory(instance: R2dbcProperties.ConnectionProperties): ConnectionFactory {
+        val connectionFactory = ConnectionFactories.get(
+            ConnectionFactoryOptions
+                .parse(instance.url)
+                .mutate()
+                .option(ConnectionFactoryOptions.USER, instance.username)
+                .option(ConnectionFactoryOptions.PASSWORD, instance.password)
+                .build()
+        )
+
+        return if (instance.pool.enabled) {
+            ConnectionPool(
+                ConnectionPoolConfiguration.builder(connectionFactory)
+                    .maxAcquireTime(instance.pool.maxAcquireTime)
+                    .maxLifeTime(instance.pool.maxLifeTime)
+                    .maxIdleTime(instance.pool.maxIdleTime)
+                    .validationQuery(instance.pool.validationQuery)
+                    .build()
+            )
+        } else {
+            connectionFactory
+        }
+    }
+
+    private fun buildRoutingConnectionFactory(
+        masterConnectionFactory: ConnectionFactory,
+        slaveConnectionFactory: ConnectionFactory
+    ): ConnectionFactory = object : AbstractRoutingConnectionFactory() {
+        override fun determineCurrentLookupKey(): Mono<in Any> = Mono.deferContextual {
+            Mono.just(it.getOrDefault("DB_TYPE", "MASTER") ?: "MASTER")
+        }
+    }.also {
+        it.setTargetConnectionFactories(
             mapOf(
                 "MASTER" to masterConnectionFactory,
                 "SLAVE" to slaveConnectionFactory
             )
         )
-
-        routingConnectionFactory.setDefaultTargetConnectionFactory(masterConnectionFactory)
-        routingConnectionFactory.afterPropertiesSet()
-        return routingConnectionFactory
-    }
-
-    @Bean("masterConnectionFactory")
-    fun masterConnectionFactory(r2dbcProperties: R2dbcProperties): ConnectionFactory {
-        val master = r2dbcProperties.master
-        val options = ConnectionFactoryOptions
-            .parse(master.url)
-            .mutate()
-            .option(ConnectionFactoryOptions.USER, master.username)
-            .option(ConnectionFactoryOptions.PASSWORD, master.password)
-            .build()
-
-        val connectionFactory = ConnectionFactories.get(options)
-
-        return if (master.pool.enabled) {
-            val pool = ConnectionPoolConfiguration.builder(connectionFactory)
-                .initialSize(master.pool.initialSize)
-                .maxIdleTime(master.pool.maxIdleTime)
-                .maxLifeTime(master.pool.maxLifeTime)
-                .build()
-
-            ConnectionPool(pool)
-        } else {
-            connectionFactory
-        }
-    }
-
-    @Bean("slaveConnectionFactory")
-    fun slaveConnectionFactory(r2dbcProperties: R2dbcProperties): ConnectionFactory {
-        val slave = r2dbcProperties.slave
-        val options = ConnectionFactoryOptions
-            .parse(slave.url)
-            .mutate()
-            .option(ConnectionFactoryOptions.USER, slave.username)
-            .option(ConnectionFactoryOptions.PASSWORD, slave.password)
-            .build()
-
-        val connectionFactory = ConnectionFactories.get(options)
-
-        return if (slave.pool.enabled) {
-            val pool = ConnectionPoolConfiguration.builder(connectionFactory)
-                .initialSize(slave.pool.initialSize)
-                .maxIdleTime(slave.pool.maxIdleTime)
-                .maxLifeTime(slave.pool.maxLifeTime)
-                .build()
-
-            ConnectionPool(pool)
-        } else {
-            connectionFactory
-        }
+        it.setDefaultTargetConnectionFactory(masterConnectionFactory)
+        it.afterPropertiesSet()
     }
 
     @Bean
     fun transactionManager(
-        @Qualifier("routingConnectionFactory") routingConnectionFactory: ConnectionFactory,
-    ): R2dbcTransactionManager {
-        return object: R2dbcTransactionManager(routingConnectionFactory) {
-            override fun doBegin(
-                synchronizationManager: TransactionSynchronizationManager,
-                transaction: Any,
-                definition: TransactionDefinition
-            ): Mono<Void> {
-                val dbType = if (definition.isReadOnly) "SLAVE" else "MASTER"
-                return super.doBegin(synchronizationManager, transaction, definition)
-                    .contextWrite { context ->
-                        context.put("DB_TYPE", dbType)
-                    }
-            }
+        @Qualifier("routingConnectionFactory") routingConnectionFactory: ConnectionFactory
+    ): R2dbcTransactionManager = object : R2dbcTransactionManager(routingConnectionFactory) {
+        override fun doBegin(
+            synchronizationManager: TransactionSynchronizationManager,
+            transaction: Any,
+            definition: TransactionDefinition
+        ): Mono<Void?> {
+            val dbType = if (definition.isReadOnly) "SLAVE" else "MASTER"
+            return super.doBegin(synchronizationManager, transaction, definition)
+                .contextWrite {
+                    it.put("DB_TYPE", dbType)
+                }
         }
     }
 }

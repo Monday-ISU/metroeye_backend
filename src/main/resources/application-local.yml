@@ -10,9 +10,9 @@ spring:
       password: ${DB_DEV_MASTER_PASSWORD}
       pool:
         enabled: true
-        initial-size: 10
-        max-idle-time: 30m
+        max-acquire-time: 60s
         max-life-time: 60m
+        max-idle-time: 30m
         validation-query: SELECT 1
     slave:
       url: r2dbc:mysql://${DB_DEV_MASTER_HOST}:${DB_DEV_MASTER_PORT}/${DB_DEV_NAME}?serverTimezone=Asia/Seoul
@@ -20,9 +20,9 @@ spring:
       password: ${DB_DEV_MASTER_PASSWORD}
       pool:
         enabled: true
-        initial-size: 10
-        max-idle-time: 30m
+        max-acquire-time: 60s
         max-life-time: 60m
+        max-idle-time: 30m
         validation-query: SELECT 1
 
 jwt:
