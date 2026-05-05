@@ -8,7 +8,5 @@ import org.springframework.web.server.WebFilter
 @Configuration
 class FilterConfig {
     @Bean
-    fun logFilter(): WebFilter {
-        return LogFilter()
-    }
+    fun logFilter(): WebFilter = LogFilter()
 }
