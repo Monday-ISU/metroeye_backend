@@ -1,7 +1,7 @@
 package click.metroeye.api.application.service
 
 import click.metroeye.api.domain.Station
-import click.metroeye.api.infrastructure.persistence.StationQueryRepository
+import click.metroeye.api.infrastructure.persistence.StationRepositoryAdapter
 import click.metroeye.api.presentation.v1.dto.response.StationResponse
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -10,7 +10,7 @@ import reactor.core.publisher.Mono
 
 @Service
 class StationService(
-    private val stationQueryRepository: StationQueryRepository
+    private val stationQueryRepository: StationRepositoryAdapter
 ) {
     companion object {
         private const val LINE_SUFFIX = "호선"
