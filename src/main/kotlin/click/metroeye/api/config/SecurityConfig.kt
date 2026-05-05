@@ -2,6 +2,7 @@ package click.metroeye.api.config
 
 import click.metroeye.api.constants.ErrorCode
 import click.metroeye.api.infrastructure.security.filter.BearerAuthenticationWebFilter
+import click.metroeye.api.infrastructure.security.manager.BearerAuthenticationManager
 import click.metroeye.api.presentation.v1.dto.response.ApiResponse
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.context.annotation.Bean
@@ -46,18 +47,25 @@ class SecurityConfig {
     @Order(2)
     fun apiSecurityFilterChain(
         http: ServerHttpSecurity,
-        bearerAuthenticationWebFilter: BearerAuthenticationWebFilter,
+        bearerAuthenticationManager: BearerAuthenticationManager,
         objectMapper: ObjectMapper
     ): SecurityWebFilterChain {
+        val bearerAuthenticationWebFilter = BearerAuthenticationWebFilter(bearerAuthenticationManager, objectMapper)
+
         return http
-            .securityMatcher(ServerWebExchangeMatchers.pathMatchers(
-                "/v1/lines/**"
-            ))
+            .securityMatcher(
+                ServerWebExchangeMatchers.pathMatchers(
+                    "/v1/**"
+                )
+            )
             .csrf { it.disable() }
             .httpBasic { it.disable() }
             .formLogin { it.disable() }
             .authorizeExchange {
-                it.anyExchange().authenticated()
+                it.pathMatchers(
+                    "/v1/devices/**",
+                    "/v1/auth/**"
+                ).permitAll().anyExchange().authenticated()
             }
             .exceptionHandling {
                 it.authenticationEntryPoint { exchange, exception ->

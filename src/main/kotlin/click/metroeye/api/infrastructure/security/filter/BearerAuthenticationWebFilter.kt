@@ -9,10 +9,8 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.security.web.server.authentication.AuthenticationWebFilter
 import org.springframework.security.web.server.authentication.ServerAuthenticationConverter
-import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
 
-@Component
 class BearerAuthenticationWebFilter(
     private val bearerAuthenticationManager: BearerAuthenticationManager,
     private val objectMapper: ObjectMapper
@@ -28,7 +26,7 @@ class BearerAuthenticationWebFilter(
 
             val apiResponse = ApiResponse(
                 errorCode.clientMessage,
-                errorCode.serverMessage,
+                    exception.message ?: errorCode.serverMessage,
                 null
             )
 
