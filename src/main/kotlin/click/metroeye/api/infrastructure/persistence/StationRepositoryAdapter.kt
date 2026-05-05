@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository
 import reactor.core.publisher.Flux
 
 @Repository
-class StationQueryRepository(
+class StationRepositoryAdapter(
     private val databaseClient: DatabaseClient
 ) {
     fun loadStations(): Flux<Station> {
