@@ -5,12 +5,11 @@ import click.metroeye.api.decorator.CachedContentServerHttpResponse
 import click.metroeye.api.util.getClientIp
 import click.metroeye.api.util.toHeadersString
 import org.slf4j.LoggerFactory
-import org.springframework.core.io.buffer.DataBufferUtils
-import org.springframework.http.MediaType
 import org.springframework.web.server.ServerWebExchange
 import org.springframework.web.server.WebFilter
 import org.springframework.web.server.WebFilterChain
 import reactor.core.publisher.Mono
+
 
 class LogFilter : WebFilter {
     companion object {
