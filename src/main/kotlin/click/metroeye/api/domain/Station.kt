@@ -5,7 +5,5 @@ class Station(
     val name: String,
     val stationCode: String,
     val externalCode: String,
-    val lineId: Long,
-    val lineName: String,
-    val lineCode: String
+    val line: Line
 )

@@ -9,7 +9,6 @@ import click.metroeye.api.presentation.v1.dto.response.CreateDeviceResponse
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import reactor.core.publisher.Mono
 
 @Service
 class DeviceService(
@@ -21,51 +20,33 @@ class DeviceService(
     private val jwtSecret: String
 ) {
     @Transactional
-    fun createDevice(createDeviceRequestModel: CreateDeviceRequestModel): Mono<CreateDeviceResponse> {
+    suspend fun createDevice(createDeviceRequestModel: CreateDeviceRequestModel): CreateDeviceResponse {
         val uuid = createDeviceRequestModel.uuid
-
-        return deviceRepositoryAdapter.loadDevice(uuid)
-            .flatMap { loadedDevice ->
-                val secret = secureRandomSecretAdapter.generate(32)
-                loadedDevice.updateSecret(secret)
-                issueTokens(loadedDevice)
-            }
-            .switchIfEmpty(
-                Mono.defer {
-                    val uuid = createDeviceRequestModel.uuid
-                    val secret = secureRandomSecretAdapter.generate(32)
-                    val osType = createDeviceRequestModel.osType
-                    val device = Device.create(uuid, secret, osType)
-                    issueTokens(device)
-                }
-            )
-    }
-
-    private fun issueTokens(device: Device): Mono<CreateDeviceResponse> {
+        val secret = secureRandomSecretAdapter.generate(32)
         val accessToken = jsonWebTokenAdapter.generate(
-            device.uuid,
+            uuid,
             mapOf("type" to "ACCESS"),
             Device.ACCESS_TOKEN_EXPIRATION_SECONDS * 1000,
             jwtSecret
         )
-
         val refreshToken = jsonWebTokenAdapter.generate(
-            device.uuid,
+            uuid,
             mapOf("type" to "REFRESH"),
             Device.REFRESH_TOKEN_EXPIRATION_SECONDS * 1000,
             jwtSecret
         )
 
-        device.updateRefreshToken(refreshToken)
+        val loadedDevice = deviceRepositoryAdapter.loadDevice(uuid)?.apply {
+            updateSecret(secret)
+            updateRefreshToken(refreshToken)
+        } ?: Device.create(uuid, secret, createDeviceRequestModel.osType, refreshToken)
+        val savedDevice = deviceRepositoryAdapter.saveDevice(loadedDevice)
 
-        return deviceRepositoryAdapter.saveDevice(device)
-            .map { savedDevice ->
-                CreateDeviceResponse(
-                    savedDevice.secret,
-                    accessToken,
-                    savedDevice.refreshToken!!,
-                    Device.ACCESS_TOKEN_EXPIRATION_SECONDS
-                )
-            }
+        return CreateDeviceResponse(
+            secret,
+            accessToken,
+            refreshToken,
+            Device.ACCESS_TOKEN_EXPIRATION_SECONDS
+        )
     }
 }
