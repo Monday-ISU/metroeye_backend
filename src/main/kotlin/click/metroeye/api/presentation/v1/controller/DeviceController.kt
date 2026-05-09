@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import reactor.core.publisher.Mono
 
 @RestController
 @RequestMapping("/v1/devices")
@@ -96,20 +95,18 @@ class DeviceController(
         ]
     )
     @PostMapping
-    fun createDevice(
+    suspend fun createDevice(
         @RequestBody createDeviceRequest: CreateDeviceRequest
-    ): Mono<ResponseEntity<ApiResponse<CreateDeviceResponse>>> {
+    ): ResponseEntity<ApiResponse<CreateDeviceResponse>> {
         val createDeviceRequestModel = CreateDeviceRequestModel.of(createDeviceRequest.uuid, createDeviceRequest.osType)
+        val createDeviceResponse = deviceService.createDevice(createDeviceRequestModel)
 
-        return deviceService.createDevice(createDeviceRequestModel)
-            .map { createDeviceResponse ->
-                ResponseEntity.ok(
-                    ApiResponse(
-                        "등록되었습니다.",
-                        "SUCCESS",
-                        createDeviceResponse
-                    )
-                )
-            }
+        return ResponseEntity.ok(
+            ApiResponse(
+                "등록되었습니다.",
+                "SUCCESS",
+                createDeviceResponse
+            )
+        )
     }
 }

@@ -169,25 +169,23 @@ class AuthController(
         ]
     )
     @PostMapping("/token")
-    fun issueToken(
+    suspend fun issueToken(
         @RequestBody issueTokenRequest: IssueTokenRequest
-    ): Mono<ResponseEntity<ApiResponse<IssueTokenResponse>>> {
+    ): ResponseEntity<ApiResponse<IssueTokenResponse>> {
         val issueTokenRequestModel = IssueTokenRequestModel.of(
             issueTokenRequest.grantType,
             issueTokenRequest.uuid,
             issueTokenRequest.secret,
             issueTokenRequest.refreshToken
         )
+        val issueTokenResponse = authService.issueToken(issueTokenRequestModel)
 
-        return authService.issueToken(issueTokenRequestModel)
-            .map { issueTokenResponse ->
-                ResponseEntity.ok(
-                    ApiResponse(
-                        "갱신되었습니다.",
-                        "SUCCESS",
-                        issueTokenResponse
-                    )
-                )
-            }
+        return ResponseEntity.ok(
+            ApiResponse(
+                "갱신되었습니다.",
+                "SUCCESS",
+                issueTokenResponse
+            )
+        )
     }
 }

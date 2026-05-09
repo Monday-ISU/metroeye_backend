@@ -4,26 +4,24 @@ import click.metroeye.api.domain.Device
 import click.metroeye.api.infrastructure.persistence.entity.DeviceEntity
 import click.metroeye.api.infrastructure.persistence.repository.DeviceRepository
 import org.springframework.stereotype.Repository
-import reactor.core.publisher.Mono
 
 @Repository
 class DeviceRepositoryAdapter(
     private val deviceRepository: DeviceRepository
 ) {
-    fun loadDevice(uuid: String): Mono<Device> {
-        return deviceRepository.findByUuid(uuid)
-            .map { loadedDeviceEntity ->
-                Device.of(
-                    loadedDeviceEntity.id,
-                    loadedDeviceEntity.uuid,
-                    loadedDeviceEntity.secret,
-                    loadedDeviceEntity.osType,
-                    loadedDeviceEntity.refreshToken
-                )
-            }
+    suspend fun loadDevice(uuid: String): Device? {
+        val loadedDeviceEntity = deviceRepository.findByUuid(uuid) ?: return null
+
+        return Device.of(
+            loadedDeviceEntity.id,
+            loadedDeviceEntity.uuid,
+            loadedDeviceEntity.secret,
+            loadedDeviceEntity.osType,
+            loadedDeviceEntity.refreshToken
+        )
     }
 
-    fun saveDevice(device: Device): Mono<Device> {
+    suspend fun saveDevice(device: Device): Device {
         val deviceEntity = DeviceEntity(
             device.id,
             device.uuid,
@@ -32,15 +30,13 @@ class DeviceRepositoryAdapter(
             device.refreshToken
         )
 
-        return deviceRepository.save(deviceEntity)
-            .map { savedDeviceEntity ->
-                Device.of(
-                    savedDeviceEntity.id,
-                    savedDeviceEntity.uuid,
-                    savedDeviceEntity.secret,
-                    savedDeviceEntity.osType,
-                    savedDeviceEntity.refreshToken
-                )
-            }
+        val savedDeviceEntity = deviceRepository.save(deviceEntity)
+        return Device.of(
+            savedDeviceEntity.id,
+            savedDeviceEntity.uuid,
+            savedDeviceEntity.secret,
+            savedDeviceEntity.osType,
+            savedDeviceEntity.refreshToken
+        )
     }
 }

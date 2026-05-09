@@ -13,8 +13,8 @@ class Device private constructor(
         const val ACCESS_TOKEN_EXPIRATION_SECONDS = 3 * 60L
         const val REFRESH_TOKEN_EXPIRATION_SECONDS = 5 * 60L
 
-        fun create(uuid: String, secret: String, osType: OsType): Device {
-            return Device(null, uuid, secret, osType)
+        fun create(uuid: String, secret: String, osType: OsType, refreshToken: String): Device {
+            return Device(null, uuid, secret, osType, refreshToken)
         }
 
         fun of(id: Long?, uuid: String, secret: String, osType: String, refreshToken: String?): Device {

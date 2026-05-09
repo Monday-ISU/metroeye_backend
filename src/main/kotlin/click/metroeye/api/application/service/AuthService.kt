@@ -13,7 +13,6 @@ import io.jsonwebtoken.JwtException
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import reactor.core.publisher.Mono
 
 @Service
 class AuthService(
@@ -24,56 +23,42 @@ class AuthService(
     private val jwtSecret: String
 ) {
     @Transactional
-    fun issueToken(issueTokenRequestModel: IssueTokenRequestModel): Mono<IssueTokenResponse> {
+    suspend fun issueToken(issueTokenRequestModel: IssueTokenRequestModel): IssueTokenResponse {
         return when (issueTokenRequestModel.grantType) {
             GrantType.CLIENT_CREDENTIALS -> {
                 val uuid = issueTokenRequestModel.uuid!!
                 val secret = issueTokenRequestModel.secret!!
 
-                deviceRepositoryAdapter.loadDevice(uuid)
-                    .flatMap { loadedDevice ->
-                        if (!loadedDevice.authenticate(secret)) {
-                            return@flatMap Mono.error(
-                                InvalidAuthException(
-                                    errorCode = ErrorCode.AUTHENTICATION_FAILED,
-                                    serverMessage = "Device secret does not match."
-                                )
-                            )
-                        }
-
-                        val accessToken = jsonWebTokenAdapter.generate(
-                            loadedDevice.uuid,
-                            mapOf("type" to "ACCESS"),
-                            Device.ACCESS_TOKEN_EXPIRATION_SECONDS * 1000,
-                            jwtSecret
-                        )
-
-                        val refreshToken = jsonWebTokenAdapter.generate(
-                            loadedDevice.uuid,
-                            mapOf("type" to "REFRESH"),
-                            Device.REFRESH_TOKEN_EXPIRATION_SECONDS * 1000,
-                            jwtSecret
-                        )
-
-                        loadedDevice.updateRefreshToken(refreshToken)
-
-                        deviceRepositoryAdapter.saveDevice(loadedDevice)
-                            .map { savedDevice ->
-                                IssueTokenResponse(
-                                    accessToken,
-                                    refreshToken,
-                                    Device.ACCESS_TOKEN_EXPIRATION_SECONDS
-                                )
-                            }
-                    }
-                    .switchIfEmpty(
-                        Mono.error(
-                            InvalidAuthException(
-                                errorCode = ErrorCode.AUTHENTICATION_FAILED,
-                                serverMessage = "Device not found."
-                            )
-                        )
+                val loadedDevice = deviceRepositoryAdapter.loadDevice(uuid)
+                    ?: throw InvalidAuthException(
+                        errorCode = ErrorCode.AUTHENTICATION_FAILED,
+                        serverMessage = "Device not found."
                     )
+
+                if (!loadedDevice.authenticate(secret)) {
+                    throw InvalidAuthException(
+                        errorCode = ErrorCode.AUTHENTICATION_FAILED,
+                        serverMessage = "Device secret does not match."
+                    )
+                }
+
+                val accessToken = jsonWebTokenAdapter.generate(
+                    uuid,
+                    mapOf("type" to "ACCESS"),
+                    Device.ACCESS_TOKEN_EXPIRATION_SECONDS * 1000,
+                    jwtSecret
+                )
+                val refreshToken = jsonWebTokenAdapter.generate(
+                    uuid,
+                    mapOf("type" to "REFRESH"),
+                    Device.REFRESH_TOKEN_EXPIRATION_SECONDS * 1000,
+                    jwtSecret
+                )
+
+                loadedDevice.updateRefreshToken(refreshToken)
+                deviceRepositoryAdapter.saveDevice(loadedDevice)
+
+                IssueTokenResponse(accessToken, refreshToken, Device.ACCESS_TOKEN_EXPIRATION_SECONDS)
             }
             else -> {
                 val refreshToken = issueTokenRequestModel.refreshToken!!
@@ -109,40 +94,27 @@ class AuthService(
                     )
                 }
 
-                deviceRepositoryAdapter.loadDevice(uuid)
-                    .flatMap { loadedDevice ->
-                        if (!loadedDevice.validateRefreshToken(refreshToken)) {
-                            return@flatMap Mono.error(
-                                InvalidAuthException(
-                                    errorCode = ErrorCode.INVALID_TOKEN,
-                                    serverMessage = "Refresh token does not match."
-                                )
-                            )
-                        }
-
-                        val accessToken = jsonWebTokenAdapter.generate(
-                            uuid,
-                            mapOf("type" to "ACCESS"),
-                            Device.ACCESS_TOKEN_EXPIRATION_SECONDS * 1000,
-                            jwtSecret
-                        )
-
-                        Mono.just(
-                            IssueTokenResponse(
-                                accessToken,
-                                refreshToken,
-                                Device.ACCESS_TOKEN_EXPIRATION_SECONDS
-                            )
-                        )
-                    }
-                    .switchIfEmpty(
-                        Mono.error(
-                            InvalidAuthException(
-                                errorCode = ErrorCode.AUTHENTICATION_FAILED,
-                                serverMessage = "Device not found."
-                            )
-                        )
+                val loadedDevice = deviceRepositoryAdapter.loadDevice(uuid)
+                    ?: throw InvalidAuthException(
+                        errorCode = ErrorCode.AUTHENTICATION_FAILED,
+                        serverMessage = "Device not found."
                     )
+
+                if (!loadedDevice.validateRefreshToken(refreshToken)) {
+                    throw InvalidAuthException(
+                        errorCode = ErrorCode.INVALID_TOKEN,
+                        serverMessage = "Refresh token does not match."
+                    )
+                }
+
+                val accessToken = jsonWebTokenAdapter.generate(
+                    uuid,
+                    mapOf("type" to "ACCESS"),
+                    Device.ACCESS_TOKEN_EXPIRATION_SECONDS * 1000,
+                    jwtSecret
+                )
+
+                IssueTokenResponse(accessToken, refreshToken, Device.ACCESS_TOKEN_EXPIRATION_SECONDS)
             }
         }
     }
