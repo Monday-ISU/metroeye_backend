@@ -1,4 +1,4 @@
-package click.metroeye.api.decorator
+package click.metroeye.api.filter.decorator
 
 import org.springframework.core.io.buffer.DataBuffer
 import org.springframework.http.MediaType

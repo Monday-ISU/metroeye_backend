@@ -1,4 +1,4 @@
-package click.metroeye.api.infrastructure.security.manager
+package click.metroeye.api.config.security
 
 import click.metroeye.api.infrastructure.crypto.token.JsonWebTokenAdapter
 import io.jsonwebtoken.ExpiredJwtException

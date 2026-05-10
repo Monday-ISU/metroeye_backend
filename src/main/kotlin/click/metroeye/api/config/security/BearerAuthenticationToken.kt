@@ -1,4 +1,4 @@
-package click.metroeye.api.infrastructure.security.token
+package click.metroeye.api.config.security
 
 import org.springframework.security.authentication.AbstractAuthenticationToken
 

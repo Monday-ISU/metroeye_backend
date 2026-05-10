@@ -1,7 +1,7 @@
 package click.metroeye.api.filter
 
-import click.metroeye.api.decorator.CachedContentServerHttpRequest
-import click.metroeye.api.decorator.CachedContentServerHttpResponse
+import click.metroeye.api.filter.decorator.CachedContentServerHttpRequest
+import click.metroeye.api.filter.decorator.CachedContentServerHttpResponse
 import click.metroeye.api.util.getClientIp
 import click.metroeye.api.util.toHeadersString
 import org.slf4j.LoggerFactory
@@ -9,7 +9,6 @@ import org.springframework.web.server.ServerWebExchange
 import org.springframework.web.server.WebFilter
 import org.springframework.web.server.WebFilterChain
 import reactor.core.publisher.Mono
-
 
 class LogFilter : WebFilter {
     companion object {

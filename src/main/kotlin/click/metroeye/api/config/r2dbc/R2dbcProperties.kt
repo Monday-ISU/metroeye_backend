@@ -1,4 +1,4 @@
-package click.metroeye.api.config.properties
+package click.metroeye.api.config.r2dbc
 
 import io.r2dbc.pool.ConnectionPoolConfiguration
 import org.springframework.boot.context.properties.ConfigurationProperties

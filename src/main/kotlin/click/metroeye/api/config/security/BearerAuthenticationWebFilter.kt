@@ -1,8 +1,8 @@
-package click.metroeye.api.infrastructure.security.filter
+package click.metroeye.api.config.security
 
 import click.metroeye.api.constants.ErrorCode
-import click.metroeye.api.infrastructure.security.manager.BearerAuthenticationManager
-import click.metroeye.api.infrastructure.security.token.BearerAuthenticationToken
+import click.metroeye.api.config.security.BearerAuthenticationManager
+import click.metroeye.api.config.security.BearerAuthenticationToken
 import click.metroeye.api.presentation.v1.dto.response.ApiResponse
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.http.HttpHeaders
@@ -26,7 +26,7 @@ class BearerAuthenticationWebFilter(
 
             val apiResponse = ApiResponse(
                 errorCode.clientMessage,
-                    exception.message ?: errorCode.serverMessage,
+                exception.message ?: errorCode.serverMessage,
                 null
             )
 
