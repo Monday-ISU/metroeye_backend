@@ -1,4 +1,4 @@
-package click.metroeye.api.decorator
+package click.metroeye.api.filter.decorator
 
 import org.reactivestreams.Publisher
 import org.springframework.core.io.buffer.DataBuffer

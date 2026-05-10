@@ -1,6 +1,5 @@
-package click.metroeye.api.config
+package click.metroeye.api.config.r2dbc
 
-import click.metroeye.api.config.properties.R2dbcProperties
 import io.r2dbc.pool.ConnectionPool
 import io.r2dbc.pool.ConnectionPoolConfiguration
 import io.r2dbc.spi.ConnectionFactories
