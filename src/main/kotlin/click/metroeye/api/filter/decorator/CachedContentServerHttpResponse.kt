@@ -15,16 +15,15 @@ class CachedContentServerHttpResponse(
         private const val MAX_CONTENT_LENGTH = 1024
     }
 
-    private var cachedContent: String = ""
+    private val stringBuffer = StringBuffer()
+    private var responseBody: String = ""
     private var totalByteCount: Int = 0
     private var isLoggable: Boolean = true
 
-    override fun writeWith(body: Publisher<out DataBuffer>): Mono<Void?> {
+    override fun writeWith(body: Publisher<out DataBuffer>): Mono<Void> {
         if (headers.contentType?.includes(MediaType.APPLICATION_JSON) != true) {
             return super.writeWith(body)
         }
-
-        val stringBuffer = StringBuffer()
 
         return super.writeWith(
             Flux.from(body)
@@ -37,7 +36,7 @@ class CachedContentServerHttpResponse(
 
                     if (totalByteCount + byteCount > MAX_CONTENT_LENGTH) {
                         isLoggable = false
-                        cachedContent = ""
+                        responseBody = ""
                         return@map buffer
                     }
 
@@ -45,11 +44,11 @@ class CachedContentServerHttpResponse(
                     val bytes = ByteArray(byteCount)
                     buffer.read(bytes)
                     stringBuffer.append(String(bytes, Charsets.UTF_8))
-                    cachedContent = stringBuffer.toString()
+                    responseBody = stringBuffer.toString()
                     buffer.factory().wrap(bytes)
                 }
         )
     }
 
-    fun getCachedContent(): String = cachedContent
+    fun bodyAsString(): String = responseBody
 }
