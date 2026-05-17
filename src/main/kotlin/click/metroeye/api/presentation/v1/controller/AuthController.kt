@@ -173,18 +173,18 @@ class AuthController(
         @RequestBody issueTokenRequest: IssueTokenRequest
     ): ResponseEntity<ApiResponse<IssueTokenResponse>> {
         val issueTokenRequestModel = IssueTokenRequestModel.of(
-            issueTokenRequest.grantType,
-            issueTokenRequest.uuid,
-            issueTokenRequest.secret,
-            issueTokenRequest.refreshToken
+            grantType = issueTokenRequest.grantType,
+            uuid = issueTokenRequest.uuid,
+            secret = issueTokenRequest.secret,
+            refreshToken = issueTokenRequest.refreshToken
         )
         val issueTokenResponse = authService.issueToken(issueTokenRequestModel)
 
         return ResponseEntity.ok(
             ApiResponse(
-                "갱신되었습니다.",
-                "SUCCESS",
-                issueTokenResponse
+                clientMessage = "갱신되었습니다.",
+                serverMessage = "SUCCESS",
+                data = issueTokenResponse
             )
         )
     }

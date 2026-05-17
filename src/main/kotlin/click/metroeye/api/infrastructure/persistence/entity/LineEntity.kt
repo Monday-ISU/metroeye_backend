@@ -10,11 +10,9 @@ import java.time.LocalDateTime
 data class LineEntity(
     @Id
     @Column("id")
-    val id: Long? = null,
+    val id: Long,
     @Column("name")
     val name: String,
-    @Column("code")
-    val code: String,
     @Column("color")
     val color: String,
     @Column("display_order")

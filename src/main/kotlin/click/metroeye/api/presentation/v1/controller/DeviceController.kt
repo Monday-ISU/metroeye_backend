@@ -103,9 +103,9 @@ class DeviceController(
 
         return ResponseEntity.ok(
             ApiResponse(
-                "등록되었습니다.",
-                "SUCCESS",
-                createDeviceResponse
+                clientMessage = "등록되었습니다.",
+                serverMessage = "SUCCESS",
+                data = createDeviceResponse
             )
         )
     }

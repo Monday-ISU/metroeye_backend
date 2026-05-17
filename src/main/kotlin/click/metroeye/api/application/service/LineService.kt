@@ -4,24 +4,21 @@ import click.metroeye.api.infrastructure.persistence.LineRepositoryAdapter
 import click.metroeye.api.presentation.v1.dto.response.LineResponse
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import reactor.core.publisher.Mono
 
 @Service
 class LineService(
     private val lineRepositoryAdapter: LineRepositoryAdapter
 ) {
     @Transactional(readOnly = true)
-    fun getLines(): Mono<List<LineResponse>> {
-        return lineRepositoryAdapter.loadLines()
-            .map { loadedLines ->
-                loadedLines.map { loadedLine ->
-                    LineResponse(
-                        loadedLine.id,
-                        loadedLine.name,
-                        loadedLine.code,
-                        loadedLine.color
-                    )
-                }
-            }
+    suspend fun getLines(): List<LineResponse> {
+        val loadedLines = lineRepositoryAdapter.loadLines()
+
+        return loadedLines.map { loadedLine ->
+            LineResponse(
+                lineId = loadedLine.id,
+                lineName = loadedLine.name,
+                color = loadedLine.color
+            )
+        }
     }
 }
