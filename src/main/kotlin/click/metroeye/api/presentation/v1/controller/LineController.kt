@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import reactor.core.publisher.Mono
 
 @RestController
 @RequestMapping("/v1/lines")
@@ -134,16 +133,15 @@ class LineController(
         ]
     )
     @GetMapping
-    fun getLines(): Mono<ResponseEntity<ApiResponse<List<LineResponse>>>> {
-        return lineService.getLines()
-            .map { lineResponses ->
-                ResponseEntity.ok(
-                    ApiResponse(
-                        "조회되었습니다.",
-                        "SUCCESS",
-                        lineResponses
-                    )
-                )
-            }
+    suspend fun getLines(): ResponseEntity<ApiResponse<List<LineResponse>>> {
+        val lineResponses = lineService.getLines()
+
+        return ResponseEntity.ok(
+            ApiResponse(
+                clientMessage = "조회되었습니다.",
+                serverMessage = "SUCCESS",
+                data = lineResponses
+            )
+        )
     }
 }

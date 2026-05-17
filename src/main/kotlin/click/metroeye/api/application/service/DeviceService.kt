@@ -24,29 +24,29 @@ class DeviceService(
         val uuid = createDeviceRequestModel.uuid
         val secret = secureRandomSecretAdapter.generate(32)
         val accessToken = jsonWebTokenAdapter.generate(
-            uuid,
-            mapOf("type" to "ACCESS"),
-            Device.ACCESS_TOKEN_EXPIRATION_SECONDS * 1000,
-            jwtSecret
+            subject = uuid,
+            claims = mapOf("type" to "ACCESS"),
+            expirationMillis = Device.ACCESS_TOKEN_EXPIRATION_SECONDS * 1000,
+            secret = jwtSecret
         )
         val refreshToken = jsonWebTokenAdapter.generate(
-            uuid,
-            mapOf("type" to "REFRESH"),
-            Device.REFRESH_TOKEN_EXPIRATION_SECONDS * 1000,
-            jwtSecret
+            subject = uuid,
+            claims = mapOf("type" to "REFRESH"),
+            expirationMillis = Device.REFRESH_TOKEN_EXPIRATION_SECONDS * 1000,
+            secret = jwtSecret
         )
 
         val loadedDevice = deviceRepositoryAdapter.loadDevice(uuid)?.apply {
             updateSecret(secret)
             updateRefreshToken(refreshToken)
         } ?: Device.create(uuid, secret, createDeviceRequestModel.osType, refreshToken)
-        val savedDevice = deviceRepositoryAdapter.saveDevice(loadedDevice)
+        deviceRepositoryAdapter.saveDevice(loadedDevice)
 
         return CreateDeviceResponse(
-            secret,
-            accessToken,
-            refreshToken,
-            Device.ACCESS_TOKEN_EXPIRATION_SECONDS
+            secret = secret,
+            accessToken = accessToken,
+            refreshToken = refreshToken,
+            expiresIn = Device.ACCESS_TOKEN_EXPIRATION_SECONDS
         )
     }
 }

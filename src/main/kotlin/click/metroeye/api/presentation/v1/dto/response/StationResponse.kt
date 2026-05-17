@@ -9,11 +9,5 @@ data class StationResponse(
     @field:Schema(description = "역 코드")
     val stationCode: String,
     @field:Schema(description = "호선 ID")
-    val lineId: Long,
-    @field:Schema(description = "호선 이름")
-    val lineName: String,
-    @field:Schema(description = "호선 코드")
-    val lineCode: String,
-    @field:Schema(description = "호선 색상")
-    val lineColor: String
+    val lineId: Long
 )

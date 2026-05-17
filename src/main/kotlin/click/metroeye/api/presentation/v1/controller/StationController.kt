@@ -31,7 +31,7 @@ class StationController(
     )
     @GetMapping
     suspend fun getStations(
-        @Parameter(description = "호선 ID", required = false)
+        @Parameter(description = "호선 ID")
         @RequestParam(required = false) lineId: Long?
     ): ResponseEntity<ApiResponse<List<StationResponse>>> {
         val stationResponses = stationService.getStations(lineId)

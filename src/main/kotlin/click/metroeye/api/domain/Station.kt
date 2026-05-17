@@ -3,7 +3,8 @@ package click.metroeye.api.domain
 class Station(
     val id: Long,
     val name: String,
-    val stationCode: String,
-    val externalCode: String,
+    val code: String,
+    val prevCode: String?,
+    val nextCode: String?,
     val line: Line
 )

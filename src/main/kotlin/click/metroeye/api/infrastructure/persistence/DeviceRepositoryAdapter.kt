@@ -13,30 +13,30 @@ class DeviceRepositoryAdapter(
         val loadedDeviceEntity = deviceRepository.findByUuid(uuid) ?: return null
 
         return Device.of(
-            loadedDeviceEntity.id,
-            loadedDeviceEntity.uuid,
-            loadedDeviceEntity.secret,
-            loadedDeviceEntity.osType,
-            loadedDeviceEntity.refreshToken
+            id = loadedDeviceEntity.id,
+            uuid = loadedDeviceEntity.uuid,
+            secret = loadedDeviceEntity.secret,
+            osType = loadedDeviceEntity.osType,
+            refreshToken = loadedDeviceEntity.refreshToken
         )
     }
 
     suspend fun saveDevice(device: Device): Device {
         val deviceEntity = DeviceEntity(
-            device.id,
-            device.uuid,
-            device.secret,
-            device.osType.name,
-            device.refreshToken
+            id = device.id,
+            uuid = device.uuid,
+            secret = device.secret,
+            osType = device.osType.name,
+            refreshToken = device.refreshToken
         )
 
         val savedDeviceEntity = deviceRepository.save(deviceEntity)
         return Device.of(
-            savedDeviceEntity.id,
-            savedDeviceEntity.uuid,
-            savedDeviceEntity.secret,
-            savedDeviceEntity.osType,
-            savedDeviceEntity.refreshToken
+            id = savedDeviceEntity.id,
+            uuid = savedDeviceEntity.uuid,
+            secret = savedDeviceEntity.secret,
+            osType = savedDeviceEntity.osType,
+            refreshToken = savedDeviceEntity.refreshToken
         )
     }
 }

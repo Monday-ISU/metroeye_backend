@@ -43,22 +43,26 @@ class AuthService(
                 }
 
                 val accessToken = jsonWebTokenAdapter.generate(
-                    uuid,
-                    mapOf("type" to "ACCESS"),
-                    Device.ACCESS_TOKEN_EXPIRATION_SECONDS * 1000,
-                    jwtSecret
+                    subject = uuid,
+                    claims = mapOf("type" to "ACCESS"),
+                    expirationMillis = Device.ACCESS_TOKEN_EXPIRATION_SECONDS * 1000,
+                    secret = jwtSecret
                 )
                 val refreshToken = jsonWebTokenAdapter.generate(
-                    uuid,
-                    mapOf("type" to "REFRESH"),
-                    Device.REFRESH_TOKEN_EXPIRATION_SECONDS * 1000,
-                    jwtSecret
+                    subject = uuid,
+                    claims = mapOf("type" to "REFRESH"),
+                    expirationMillis = Device.REFRESH_TOKEN_EXPIRATION_SECONDS * 1000,
+                    secret = jwtSecret
                 )
 
                 loadedDevice.updateRefreshToken(refreshToken)
                 deviceRepositoryAdapter.saveDevice(loadedDevice)
 
-                IssueTokenResponse(accessToken, refreshToken, Device.ACCESS_TOKEN_EXPIRATION_SECONDS)
+                IssueTokenResponse(
+                    accessToken = accessToken,
+                    refreshToken = refreshToken,
+                    expiresIn = Device.ACCESS_TOKEN_EXPIRATION_SECONDS
+                )
             }
             else -> {
                 val refreshToken = issueTokenRequestModel.refreshToken!!
@@ -108,13 +112,17 @@ class AuthService(
                 }
 
                 val accessToken = jsonWebTokenAdapter.generate(
-                    uuid,
-                    mapOf("type" to "ACCESS"),
-                    Device.ACCESS_TOKEN_EXPIRATION_SECONDS * 1000,
-                    jwtSecret
+                    subject = uuid,
+                    claims = mapOf("type" to "ACCESS"),
+                    expirationMillis = Device.ACCESS_TOKEN_EXPIRATION_SECONDS * 1000,
+                    secret = jwtSecret
                 )
 
-                IssueTokenResponse(accessToken, refreshToken, Device.ACCESS_TOKEN_EXPIRATION_SECONDS)
+                IssueTokenResponse(
+                    accessToken = accessToken,
+                    refreshToken = refreshToken,
+                    expiresIn = Device.ACCESS_TOKEN_EXPIRATION_SECONDS
+                )
             }
         }
     }
