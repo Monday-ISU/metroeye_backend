@@ -29,6 +29,7 @@ class StationRepositoryAdapter(
                     ls.code AS station_code,
                     ls.prev_code AS prev_code,
                     ls.next_code AS next_code,
+                    ls.is_terminal AS is_terminal,
                     l.id AS line_id,
                     l.name AS line_name,
                     l.color AS line_color
@@ -42,13 +43,13 @@ class StationRepositoryAdapter(
                 bindParams.fold(spec) { boundSpec, (key, value) -> boundSpec.bind(key, value) }
             }
             .map { row ->
-                Station(
+                Station.of(
                     id = row.get("station_id", Long::class.java)!!,
                     name = row.get("station_name", String::class.java)!!,
                     code = row.get("station_code", String::class.java)!!,
                     prevCode = row.get("prev_code", String::class.java),
                     nextCode = row.get("next_code", String::class.java),
-                    line = Line(
+                    line = Line.of(
                         id = row.get("line_id", Long::class.java)!!,
                         name = row.get("line_name", String::class.java)!!,
                         color = row.get("line_color", String::class.java)!!

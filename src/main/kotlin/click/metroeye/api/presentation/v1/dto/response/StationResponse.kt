@@ -4,10 +4,12 @@ import io.swagger.v3.oas.annotations.media.Schema
 
 @Schema(description = "역 정보 응답 객체")
 data class StationResponse(
-    @field:Schema(description = "역 이름")
+    @Schema(description = "역 ID")
+    val stationId: Long,
+    @Schema(description = "역 이름")
     val stationName: String,
-    @field:Schema(description = "역 코드")
+    @Schema(description = "역 코드")
     val stationCode: String,
-    @field:Schema(description = "호선 ID")
+    @Schema(description = "호선 ID")
     val lineId: Long
 )
