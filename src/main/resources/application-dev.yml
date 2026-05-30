@@ -32,6 +32,10 @@ external-api:
     subway:
       api-key: ${SEOUL_SUBWAY_API_KEY}
 
+app:
+  min-version: 1.0.0
+  maintenance: false
+
 logging:
   level:
     click.metroeye.api: info
