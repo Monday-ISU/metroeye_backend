@@ -68,6 +68,38 @@ class AuthController(
                 ]
             ),
             io.swagger.v3.oas.annotations.responses.ApiResponse(
+                responseCode = "400",
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        examples = [
+                            ExampleObject(
+                                name = "지원하지 않는 인증 유형",
+                                description = "요청한 인증 유형이 CLIENT_CREDENTIALS 또는 REFRESH_TOKEN이 아닌 경우 발생합니다.",
+                                value = """
+                                    {
+                                        "clientMessage": "지원하지 않는 인증 유형입니다.",
+                                        "serverMessage": "IssueTokenRequestModel.grantType is invalid.",
+                                        "data": null
+                                    }
+                                """
+                            ),
+                            ExampleObject(
+                                name = "기기 재인증을 위한 정보 누락",
+                                description = "기기 재인증을 위한 정보(기기 고유 번호, 기기 비밀키)가 누락된 경우 발생합니다.",
+                                value = """
+                                    {
+                                        "clientMessage": "기기 재인증을 위한 정보(기기 고유 번호, 기기 비밀키)가 누락되었습니다.",
+                                        "serverMessage": "IssueTokenRequestModel.uuid or IssueTokenRequestModel.secret is missing.",
+                                        "data": null
+                                    }
+                                """
+                            )
+                        ]
+                    )
+                ]
+            ),
+            io.swagger.v3.oas.annotations.responses.ApiResponse(
                 responseCode = "401",
                 content = [
                     Content(
@@ -183,7 +215,7 @@ class AuthController(
         return ResponseEntity.ok(
             ApiResponse(
                 clientMessage = "갱신되었습니다.",
-                serverMessage = "SUCCESS",
+                serverMessage = "Success",
                 data = issueTokenResponse
             )
         )
