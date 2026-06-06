@@ -1,6 +1,6 @@
 package click.metroeye.api.domain
 
-class Line(
+class Line private constructor(
     val id: Long,
     val name: String,
     val color: String
