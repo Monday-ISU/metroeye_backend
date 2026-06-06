@@ -55,7 +55,7 @@ enum class ErrorCode(
     INVALID_TOKEN(
         "AUTH003",
         "유효하지 않은 토큰입니다.",
-        "Invited token.",
+        "Invalid token.",
         HttpStatus.UNAUTHORIZED
     ),
 
