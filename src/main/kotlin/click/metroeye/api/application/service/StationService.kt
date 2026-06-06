@@ -41,8 +41,10 @@ class StationService(
         val stationsByCode = loadedStations.groupBy { it.code }
 
         val nextStationRoutes = traverseAdjacentStationRoutes(selectedStation.code, stationsByCode, DirectionType.NEXT, size)
+            .filter { it.isNotEmpty() }
             .map { (listOf(selectedStation.code) + it).reversed() }
         val prevStationRoutes = traverseAdjacentStationRoutes(selectedStation.code, stationsByCode, DirectionType.PREV, size)
+            .filter { it.isNotEmpty() }
             .map { listOf(selectedStation.code) + it }
 
 
