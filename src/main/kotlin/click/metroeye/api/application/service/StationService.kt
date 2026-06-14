@@ -37,6 +37,9 @@ class StationService(
 
     @Transactional(readOnly = true)
     suspend fun getAdjacentStations(lineId: Long, stationId: Long, size: Int): List<AdjacentStationsResponse> {
+        stationRepositoryAdapter.loadStationById(stationId)
+            ?: throw InvalidStationException(ErrorCode.STATION_NOT_FOUND)
+
         val loadedStations = stationRepositoryAdapter.loadStations(lineId)
         val selectedStation = loadedStations.find { it.id == stationId }
             ?: throw InvalidStationException(ErrorCode.STATION_LINE_NOT_MATCH)
