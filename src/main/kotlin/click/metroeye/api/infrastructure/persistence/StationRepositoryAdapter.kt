@@ -4,6 +4,7 @@ import click.metroeye.api.domain.Line
 import click.metroeye.api.domain.Station
 import kotlinx.coroutines.reactive.awaitFirstOrNull
 import kotlinx.coroutines.reactive.awaitSingle
+import kotlinx.coroutines.reactor.awaitSingleOrNull
 import org.springframework.r2dbc.core.DatabaseClient
 import org.springframework.stereotype.Repository
 
@@ -48,6 +49,21 @@ class StationRepositoryAdapter(
             .all()
             .next()
             .awaitFirstOrNull()
+    }
+
+    suspend fun existsStationOnLine(stationId: Long, lineId: Long): Boolean {
+        return databaseClient.sql(
+            """
+                SELECT COUNT(*) AS cnt
+                FROM `line_stations` AS ls
+                INNER JOIN `stations` AS s ON ls.station_id = s.id
+                WHERE s.id = :stationId AND ls.line_id = :lineId
+            """.trimIndent())
+            .bind("stationId", stationId)
+            .bind("lineId", lineId)
+            .map { row -> row.get("cnt", Long::class.java)!! > 0 }
+            .one()
+            .awaitSingleOrNull() ?: false
     }
 
     suspend fun loadStations(lineId: Long? = null): List<Station> {

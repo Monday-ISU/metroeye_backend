@@ -19,4 +19,10 @@ class LineRepositoryAdapter(
             )
         }
     }
+
+    suspend fun loadLineById(lineId: Long): Line? {
+        return lineRepository.findById(lineId)?.let { entity ->
+            Line.of(id = entity.id, name = entity.name, color = entity.color)
+        }
+    }
 }

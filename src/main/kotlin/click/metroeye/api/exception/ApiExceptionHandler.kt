@@ -31,6 +31,16 @@ class ApiExceptionHandler {
                         )
                     )
             }
+            is InvalidStationException -> {
+                ResponseEntity.status(e.errorCode.status)
+                    .body(
+                        ApiResponse(
+                            e.clientMessage,
+                            e.serverMessage,
+                            null
+                        )
+                    )
+            }
             else -> {
                 ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(

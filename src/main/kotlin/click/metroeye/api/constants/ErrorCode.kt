@@ -37,6 +37,21 @@ enum class ErrorCode(
         HttpStatus.INTERNAL_SERVER_ERROR
     ),
 
+    // 역
+    STATION_NOT_FOUND(
+        "STATION001",
+        "역 정보를 찾을 수 없습니다.",
+        "Station not found.",
+        HttpStatus.NOT_FOUND
+    ),
+
+    STATION_LINE_NOT_MATCH(
+        "STATION002",
+        "해당 역은 요청한 호선에 존재하지 않습니다.",
+        "Station does not belong to the requested line.",
+        HttpStatus.BAD_REQUEST
+    ),
+
     // 인증
     AUTHENTICATION_REQUIRED(
         "AUTH001",
