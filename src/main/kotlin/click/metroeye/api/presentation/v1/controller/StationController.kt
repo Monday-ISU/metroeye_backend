@@ -139,7 +139,6 @@ class StationController(
         @RequestParam(value = "size") size: Int,
     ): ResponseEntity<ApiResponse<List<AdjacentStationsResponse>>> {
         val adjacentStationsResponses = stationService.getAdjacentStations(lineId, stationId, size)
-
         return ResponseEntity.ok(
             ApiResponse(
                 clientMessage = "조회되었습니다.",
@@ -158,6 +157,10 @@ class StationController(
 ### [Path Variable]
 
 - **stationId**: 역 ID
+
+### [Query Parameter]
+
+- **lineId**: 호선 ID
 """
     )
     @ApiResponses(
@@ -197,11 +200,11 @@ class StationController(
     @GetMapping("/{stationId}/trains")
     suspend fun getTrains(
         @Parameter(description = "역 ID", required = true)
-        @PathVariable(value = "stationId") stationId: Long
+        @PathVariable(value = "stationId") stationId: Long,
+        @Parameter(description = "호선 ID", required = true)
+        @RequestParam(value = "lineId") lineId: Long
     ): ResponseEntity<ApiResponse<List<TrainResponse>>> {
-        val trainResponses = trainService.getTrains(stationId)
-            ?: return ResponseEntity.notFound().build()
-
+        val trainResponses = trainService.getTrains(stationId, lineId)
         return ResponseEntity.ok(
             ApiResponse(
                 clientMessage = "조회되었습니다.",
