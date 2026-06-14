@@ -1,7 +1,9 @@
 package click.metroeye.api.application.service
 
 import click.metroeye.api.constants.DirectionType
+import click.metroeye.api.constants.ErrorCode
 import click.metroeye.api.domain.Station
+import click.metroeye.api.exception.InvalidStationException
 import click.metroeye.api.infrastructure.persistence.StationRepositoryAdapter
 import click.metroeye.api.presentation.v1.dto.response.AdjacentStationsResponse
 import click.metroeye.api.presentation.v1.dto.response.StationResponse
@@ -34,9 +36,10 @@ class StationService(
     }
 
     @Transactional(readOnly = true)
-    suspend fun getAdjacentStations(lineId: Long, stationId: Long, size: Int): List<AdjacentStationsResponse>? {
+    suspend fun getAdjacentStations(lineId: Long, stationId: Long, size: Int): List<AdjacentStationsResponse> {
         val loadedStations = stationRepositoryAdapter.loadStations(lineId)
-        val selectedStation = loadedStations.find { it.id == stationId } ?: return null
+        val selectedStation = loadedStations.find { it.id == stationId }
+            ?: throw InvalidStationException(ErrorCode.STATION_LINE_NOT_MATCH)
 
         val stationsByCode = loadedStations.groupBy { it.code }
 
