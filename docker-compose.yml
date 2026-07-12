@@ -1,0 +1,25 @@
+services:
+  app:
+    build:
+      context: .
+    image: ghcr.io/${GHCR_USERNAME}/metroeye-backend:dev
+    container_name: metroeye-app
+    restart: unless-stopped
+    networks:
+      - proxy
+    ports:
+      - "8080:8080"
+    environment:
+      TZ: Asia/Seoul
+      SPRING_PROFILES_ACTIVE: dev
+      DB_DEV_MASTER_HOST: ${DB_DEV_MASTER_HOST}
+      DB_DEV_MASTER_PORT: ${DB_DEV_MASTER_PORT}
+      DB_DEV_NAME: ${DB_DEV_NAME}
+      DB_DEV_MASTER_USERNAME: ${DB_DEV_MASTER_USERNAME}
+      DB_DEV_MASTER_PASSWORD: ${DB_DEV_MASTER_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      SEOUL_SUBWAY_API_KEY: ${SEOUL_SUBWAY_API_KEY}
+
+networks:
+  proxy:
+    external: true

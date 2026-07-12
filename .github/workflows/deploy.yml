@@ -38,10 +38,9 @@ jobs:
 
       - name: Build and Push Docker image
         run: |
-          LOWER_GHCR_USERNAME=$(echo "${{ secrets.GHCR_USERNAME }}" | tr '[:upper:]' '[:lower:]')
-          IMAGE_NAME=ghcr.io/$LOWER_GHCR_USERNAME/metroeye-backend:dev
-          docker build -t $IMAGE_NAME .
-          docker push $IMAGE_NAME
+          export GHCR_USERNAME=${{ secrets.GHCR_USERNAME }}
+          docker compose build
+          docker compose push
 
   cd:
     name: Continuous Deployment
@@ -49,6 +48,18 @@ jobs:
     needs: ci
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Copy docker-compose.yml to EC2
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_DEV_HOST }}
+          username: ${{ secrets.EC2_DEV_USER }}
+          key: ${{ secrets.EC2_DEV_SSH_KEY }}
+          source: "docker-compose.yml"
+          target: "/opt/metroeye"
+
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v1.2.2
         with:
@@ -58,22 +69,8 @@ jobs:
           script: |
             echo "Deploy to EC2: START"
             docker login ghcr.io -u "${{ secrets.GHCR_USERNAME }}" -p "${{ secrets.GHCR_TOKEN }}"
-            LOWER_GHCR_USERNAME=$(echo "${{ secrets.GHCR_USERNAME }}" | tr '[:upper:]' '[:lower:]')
-            docker pull ghcr.io/$LOWER_GHCR_USERNAME/metroeye-backend:dev
-            docker stop metroeye-app || true
-            docker rm metroeye-app || true
-            docker run -d \
-              --name metroeye-app \
-              --network proxy \
-              -e TZ=Asia/Seoul \
-              -e SPRING_PROFILES_ACTIVE=dev \
-              -e DB_DEV_MASTER_HOST=${{ secrets.DB_DEV_MASTER_HOST }} \
-              -e DB_DEV_MASTER_PORT=${{ secrets.DB_DEV_MASTER_PORT }} \
-              -e DB_DEV_NAME=${{ secrets.DB_DEV_NAME }} \
-              -e DB_DEV_MASTER_USERNAME=${{ secrets.DB_DEV_MASTER_USERNAME }} \
-              -e DB_DEV_MASTER_PASSWORD=${{ secrets.DB_DEV_MASTER_PASSWORD }} \
-              -e JWT_SECRET=${{ secrets.JWT_SECRET }} \
-              -e SEOUL_SUBWAY_API_KEY=${{ secrets.SEOUL_SUBWAY_API_KEY }} \
-              -p 8080:8080 \
-              ghcr.io/$LOWER_GHCR_USERNAME/metroeye-backend:dev
+            export GHCR_USERNAME=${{ secrets.GHCR_USERNAME }}
+            cd /opt/metroeye
+            docker compose pull
+            docker compose up -d
             echo "Deploy to EC2: END"
