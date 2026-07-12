@@ -59,6 +59,7 @@ jobs:
           key: ${{ secrets.EC2_DEV_SSH_KEY }}
           source: "docker-compose.yml"
           target: "/opt/metroeye"
+          overwrite: true
 
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v1.2.2
